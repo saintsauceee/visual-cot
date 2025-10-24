@@ -1,3 +1,5 @@
+import data_loader as dl
+
 class RushHourPuzzle:
     """
     Implementation of the Rush Hour Puzzle.
@@ -89,3 +91,6 @@ if __name__ == "__main__":
         'F': (1, 5, 2, 'V'),
     })
     print(board.snapshot())
+
+    puzzles = dl.data_loader("./dataset")
+    print(puzzles[1])
