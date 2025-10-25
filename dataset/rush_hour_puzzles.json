@@ -118,5 +118,245 @@
     ["H", "F", null, null, null, "C"],
     ["H", "F", "O", "O", "O", "C"]
   ]
-  }
+  },
+  {
+  "name": 11,
+  "exit": [6, 4],
+  "board": [
+    [null, null, null, "O", "O", "O"],
+    [null, null, null, "X", null, "A"],
+    ["R", "B", "B", "X", null, "A"],
+    ["R", null, "Q", "P", "P", "P"],
+    ["R", null, "Q", null, null, null],
+    ["E", "E", "Q", null, null, null]
+  ]
+},
+{
+  "name": 12,
+  "exit": [6, 4],
+  "board": [
+    ["R", null, null, "X", "A", "A"],
+    ["R", null, null, "X", null, "B"],
+    ["R", null, "P", "P", "P", "B"],
+    [null, null, "Q", null, null, null],
+    ["C", "C", "Q", null, null, null],
+    [null, null, "Q", "O", "O", "O"]
+  ]
+},
+{
+  "name": 13,
+  "exit": [6, 4],
+  "board": [
+    ["P", "P", "P", null, null, "A"],
+    ["I", null, "E", "E", null, "A"],
+    ["I", null, null, "D", "D", "B"],
+    ["G", "G", "F", "X", null, "B"],
+    ["K", "H", "F", "X", "C", "C"],
+    ["K", "H", "O", "O", "O", null]
+  ]
+},
+{
+  "name": 14,
+  "exit": [6, 4],
+  "board": [
+    ["K", null, "D", "D", null, "A"],
+    ["K", null, "E", "E", null, "A"],
+    ["I", "I", "H", "X", "B", "B"],
+    [null, null, "H", "X", null, null],
+    [null, "J", "F", "F", "C", null],
+    [null, "J", "G", "G", "C", null]
+  ]
+},
+{
+  "name": 15,
+  "exit": [6, 4],
+  "board": [
+    [null, "Q", "Q", "Q", "C", null],
+    ["H", "R", "R", "R", "C", "A"],
+    ["H", "E", "E", "X", "D", "A"],
+    ["I", "F", "F", "X", "D", "B"],
+    ["I", "G", "O", "O", "O", "B"],
+    [null, "G", "P", "P", "P", null]
+  ]
+},
+{
+  "name": 16,
+  "exit": [6, 4],
+  "board": [
+    ["G", null, null, "D", "D", "A"],
+    ["G", null, "F", "F", null, "A"],
+    [null, "P", "P", "P", "E", "B"],
+    [null, null, "Q", "X", "E", "B"],
+    [null, null, "Q", "X", "C", "C"],
+    [null, null, "Q", "O", "O", "O"]
+  ]
+},
+{
+  "name": 17,
+  "exit": [6, 4],
+  "board": [
+    ["R", "Q", "E", "X", "A", "A"],
+    ["R", "Q", "E", "X", null, "O"],
+    ["R", "Q", "D", "D", "B", "O"],
+    ["P", "P", "P", null, "B", "O"],
+    ["F", "F", null, null, "C", null],
+    ["G", "G", null, null, "C", null]
+  ]
+},
+{
+  "name": 18,
+  "exit": [6, 4],
+  "board": [
+    ["R", "P", "P", "P", "C", "A"],
+    ["R", "D", "Q", "X", "C", "A"],
+    ["R", "D", "Q", "X", "B", "B"],
+    [null, null, "Q", "O", "O", "O"],
+    [null, null, null, null, null, null],
+    [null, null, null, null, null, null]
+  ]
+},
+{
+  "name": 19,
+  "exit": [6, 4],
+  "board": [
+    [null, null, null, null, null, null],
+    [null, "O", "D", "D", null, null],
+    [null, "O", "E", "X", "A", "A"],
+    [null, "O", "E", "X", null, "B"],
+    [null, "F", "F", "J", "J", "B"],
+    [null, null, null, null, null, null]
+  ]
+},
+{
+  "name": 20,
+  "exit": [6, 4],
+  "board": [
+    [null, null, null, "X", "A", "A"],
+    [null, null, null, "X", "B", null],
+    ["E", "E", "D", "D", "B", null],
+    ["Q", "F", null, "C", "C", "O"],
+    ["Q", "F", null, null, null, "O"],
+    ["Q", "P", "P", "P", null, "O"]
+  ]
+},
+{
+  "name": 21,
+  "exit": [6, 4],
+  "board": [
+    [null, null, "B", "B", null, null],
+    [null, null, null, "X", null, "A"],
+    ["Q", "Q", "Q", "X", null, "A"],
+    [null, null, "C", "O", "O", "O"],
+    [null, null, "C", null, null, null],
+    [null, null, "P", "P", "P", null]
+  ]
+},
+{
+  "name": 22,
+  "exit": [6, 4],
+  "board": [
+    ["E", "E", null, null, null, null],
+    ["Q", "C", "C", "X", null, null],
+    ["Q", "F", null, "X", "A", "A"],
+    ["Q", "F", "P", "P", "P", "O"],
+    [null, null, "D", null, null, "O"],
+    ["G", "G", "D", null, null, "O"]
+  ]
+},
+{
+  "name": 23,
+  "exit": [6, 4],
+  "board": [
+    ["J", "Q", "Q", "Q", null, "A"],
+    ["J", null, null, "C", "C", "A"],
+    ["G", "G", "F", "X", "B", "B"],
+    ["H", "H", "F", "X", "D", null],
+    [null, "I", null, null, "D", null],
+    [null, "I", "O", "O", "O", null]
+  ]
+},
+{
+  "name": 24,
+  "exit": [6, 4],
+  "board": [
+    ["H", "H", "E", "X", null, "O"],
+    [null, null, "E", "X", null, "O"],
+    [null, null, "F", "C", "C", "O"],
+    ["Q", "I", "F", "P", "P", "P"],
+    ["Q", "I", null, null, "B", "A"],
+    ["Q", "G", "G", null, "B", "A"]
+  ]
+},
+{
+  "name": 25,
+  "exit": [6, 4],
+  "board": [
+    ["H", null, "P", "P", "P", null],
+    ["H", null, null, "X", "A", "A"],
+    ["F", "F", null, "X", null, null],
+    [null, "G", "E", "B", "B", "O"],
+    [null, "G", "E", "C", "C", "O"],
+    ["Q", "Q", "Q", null, null, "O"]
+  ]
+},
+{
+  "name": 26,
+  "exit": [6, 4],
+  "board": [
+    [null, null, "D", "D", "B", null],
+    ["Q", null, null, "X", "B", null],
+    ["Q", "F", "F", "X", "A", "A"],
+    ["Q", "I", "G", null, null, "O"],
+    [null, "I", "G", "C", "C", "O"],
+    ["P", "P", "P", null, null, "O"]
+  ]
+},
+{
+  "name": 27,
+  "exit": [6, 4],
+  "board": [
+    ["R", null, null, "C", "C", "O"],
+    ["R", null, null, null, "P", "O"],
+    ["R", "Q", "Q", "Q", "P", "O"],
+    ["F", "F", null, "X", "P", null],
+    [null, "G", null, "X", "A", "A"],
+    [null, "G", "D", "D", "B", "B"]
+  ]
+},
+{
+  "name": 28,
+  "exit": [6, 4],
+  "board": [
+    [null, "Q", "D", null, null, null],
+    [null, "Q", "D", null, null, "A"],
+    ["G", "Q", "C", "C", null, "A"],
+    ["G", "E", "E", "X", null, "B"],
+    ["H", null, "F", "X", null, "B"],
+    ["H", null, "F", "O", "O", "O"]
+  ]
+},
+{
+  "name": 29,
+  "exit": [6, 4],
+  "board": [
+    [null, "F", "F", "C", "C", null],
+    [null, null, "G", "O", "O", "O"],
+    ["J", "J", "G", "X", null, null],
+    ["P", "H", "H", "X", "A", "A"],
+    ["P", null, null, null, null, "B"],
+    ["P", "I", "I", "E", "E", "B"]
+  ]
+},
+{
+  "name": 30,
+  "exit": [6, 4],
+  "board": [
+    ["G", "G", "F", null, null, null],
+    ["H", null, "F", null, null, "A"],
+    ["H", "O", "O", "O", null, "A"],
+    ["I", null, null, "X", "B", "B"],
+    ["I", null, null, "X", null, "C"],
+    ["P", "P", "P", "E", "E", "C"]
+  ]
+}
 ]
