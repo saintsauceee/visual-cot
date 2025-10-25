@@ -1,5 +1,3 @@
-import data_loader as dl
-
 class RushHourPuzzle:
     """
     Implementation of the Rush Hour Puzzle.
@@ -80,6 +78,8 @@ class RushHourPuzzle:
             raise ValueError("red car 'X' must be horizontal")
 
 if __name__ == "__main__":
+    import data_loader as dl
+
     board = RushHourPuzzle()
     board.set_vehicles({
         'X': (2, 1, 2, 'H'),
