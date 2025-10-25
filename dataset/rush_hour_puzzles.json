@@ -1,0 +1,35 @@
+[
+  {
+    "name": 1,
+    "board": [
+      ["B", "B", "P" , "P", "P", "A"],
+      [null, null , null, "X", null, "A"],
+      ["R", null, null, "X", null, null],
+      ["R", null, "Q", "Q", "Q", null],
+      ["R", "C", null, null, null, null],
+      [null, "C", null, "O", "O", "O"]
+    ]
+  },
+  {
+    "name": 2,
+    "board": [
+      ["F", null, "Q" , "X", "A", "A"],
+      ["F", null , "Q", "X", null, null],
+      ["D", "D", "Q", null, null, null],
+      ["G", null, null, "B", "B", "O"],
+      ["G", "E", "C", "C", null, "O"],
+      [null, "E", "P", "P", "P", "O"]
+    ]
+  },
+  {
+  "name": 3,
+  "board": [
+    [null, null, null, null, null, null],
+    ["B", "B", "A", "X", null, null],
+    ["C", null , "A", "X", null, null],
+    ["C", "O", "O", "O", null, null],
+    [null, null, null, null, null, null],
+    ["P", "P", "P", null, null, null]
+  ]
+  }
+]

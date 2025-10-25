@@ -92,5 +92,5 @@ if __name__ == "__main__":
     })
     print(board.snapshot())
 
-    puzzles = dl.data_loader("./dataset")
+    puzzles = dl.data_loader("./dataset/rush_hour_puzzles.json")
     print(puzzles[1])

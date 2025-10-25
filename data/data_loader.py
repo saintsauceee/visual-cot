@@ -1,25 +1,24 @@
-import os
-import json 
+import json
 
-# Loads all the puzzles in the given folder into a dictionnary
+def data_loader(file_path):
+    """
+    Load all puzzles from a single JSON file into a dictionary.
 
-def data_loader(folder_path):
-    puzzles = {}
+    Args:
+        file_path (str): Path to the JSON file containing all puzzles.
 
-    for filename in os.listdir(folder_path):
-        if filename.endswith(".json"):
-            # Extract puzzle number (e.g. "3.json" -> 3)
-            puzzle_number = int(filename.split(".")[0])
+    Returns:
+        dict: {puzzle_name (int): board (list of lists)}
+    """
+    with open(file_path, "r", encoding="utf-8") as file:
+        puzzles_list = json.load(file)
 
-            file_path = os.path.join(folder_path, filename)
-            with open(file_path, "r", encoding="utf-8") as file:
-                puzzles[puzzle_number] = json.load(file)
+    # Convert list of puzzles to dictionary {name: board}
+    puzzles = {puzzle["name"]: puzzle["board"] for puzzle in puzzles_list}
 
     return puzzles
 
 
 if __name__ == "__main__":
-
-    puzzles = data_loader("./dataset")
+    puzzles = data_loader("./dataset/rush_hour_puzzles.json")
     print(puzzles)
-    
