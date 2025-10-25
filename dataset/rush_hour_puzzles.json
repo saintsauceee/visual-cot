@@ -31,5 +31,38 @@
     [null, null, null, null, null, null],
     ["P", "P", "P", null, null, null]
   ]
+  },
+  {
+  "name": 4,
+  "board": [
+    [null, null, null, "O", "O", "O"],
+    [null, null, null, "X", null, null],
+    ["R", "A" , "A", "X", null, null],
+    ["R", null, "Q", "P", "P", "P"],
+    ["R", null, "Q", null, null, null],
+    ["B", "B", "Q", null, null, null]
+  ]
+  },
+  {
+    "name": 5,
+    "board": [
+    ["D", "D", "P", "P", "P", "A"],
+    [null, null, "R", "X", null, "A"],
+    [null, null, "R", "X", null, null],
+    [null, null, "R", "O", "O", "O"],
+    ["F", "E", "Q", "Q", "Q", null],
+    ["F", "E", "G", "G", "B", "B"]
+    ]
+  },
+  {
+    "name": 6,
+    "board": [
+    ["F", "F", "D", null, "C", "A"],
+    [null, null, "D", "X", "C", "A"],
+    [null, "E", "E", "X", null, null],
+    ["R", "Q", "Q", "Q", "B", "B"],
+    ["R", null, "O", "O", "O", null],
+    ["R", null, "P", "P", "P", null]
+    ]
   }
 ]
