@@ -1,6 +1,7 @@
 [
   {
     "name": 1,
+    "exit": [6,4],
     "board": [
       ["B", "B", "P" , "P", "P", "A"],
       [null, null , null, "X", null, "A"],
@@ -12,6 +13,7 @@
   },
   {
     "name": 2,
+    "exit": [6,4],
     "board": [
       ["F", null, "Q" , "X", "A", "A"],
       ["F", null , "Q", "X", null, null],
@@ -23,6 +25,7 @@
   },
   {
   "name": 3,
+  "exit": [6,4],
   "board": [
     [null, null, null, null, null, null],
     ["B", "B", "A", "X", null, null],
@@ -34,6 +37,7 @@
   },
   {
   "name": 4,
+  "exit": [6,4],
   "board": [
     [null, null, null, "O", "O", "O"],
     [null, null, null, "X", null, null],
@@ -45,6 +49,7 @@
   },
   {
     "name": 5,
+    "exit": [6,4],
     "board": [
     ["D", "D", "P", "P", "P", "A"],
     [null, null, "R", "X", null, "A"],
@@ -56,6 +61,7 @@
   },
   {
     "name": 6,
+    "exit": [6,4],
     "board": [
     ["F", "F", "D", null, "C", "A"],
     [null, null, "D", "X", "C", "A"],
@@ -67,6 +73,7 @@
   },
   {
     "name": 7,
+    "exit": [6,4],
     "board": [
     [null, null, null, null, null, null],
     [null, null, null, "X", "A", "A"],
@@ -78,6 +85,7 @@
   },
   {
     "name": 8,
+    "exit": [6,4],
     "board": [
     ["K", "H", "F", "X", null, null],
     ["K", "H", "F", "X", null, null],
@@ -89,6 +97,7 @@
   },
   {
     "name": 9,
+    "exit": [6,4],
     "board": [
     ["P", "P", "P", "X", null, null],
     [null, null, "Q", "X", "A", "A"],
@@ -100,6 +109,7 @@
   },
   {
     "name": 10,
+    "exit": [6,4],
     "board": [
     ["G", "P", "P", "P", "D", "A"],
     ["G", null, "Q", "X", "D", "A"],

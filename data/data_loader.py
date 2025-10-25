@@ -14,7 +14,13 @@ def data_loader(file_path):
         puzzles_list = json.load(file)
 
     # Convert list of puzzles to dictionary {name: board}
-    puzzles = {puzzle["name"]: puzzle["board"] for puzzle in puzzles_list}
+    puzzles = {
+        puzzle["name"]: {
+            "exit": puzzle.get("exit"),
+            "board": puzzle["board"]
+        }
+        for puzzle in puzzles_list
+    }
 
     return puzzles
 
