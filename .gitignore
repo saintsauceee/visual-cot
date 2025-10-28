@@ -1,3 +1,5 @@
 .env
 __pycache__/
-.DS_Store
+.DS_Storedataset/rush.txt
+dataset/rush.txt
+dataset/rush.txt
