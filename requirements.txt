@@ -1,3 +1,4 @@
 google-genai
 transformers
+datasets
 python-dotenv
