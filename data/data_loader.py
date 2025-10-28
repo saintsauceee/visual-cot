@@ -16,7 +16,9 @@ def data_loader(file_path):
     # Convert list of puzzles to dictionary {name: board}
     puzzles = {
         puzzle["name"]: {
+            "id": puzzle["name"],
             "exit": puzzle.get("exit"),
+            "min_moves": puzzle.get("min_moves"),
             "board": puzzle["board"]
         }
         for puzzle in puzzles_list
@@ -26,5 +28,5 @@ def data_loader(file_path):
 
 
 if __name__ == "__main__":
-    puzzles = data_loader("./dataset/rush_hour_puzzles.json")
-    print(puzzles)
+    puzzles = data_loader("./dataset/rush_no_wall_1000_balanced.json")
+    print(puzzles[1])  # Example to print the first puzzle

@@ -1,3 +1,6 @@
+from rh_exceptions import InvalidMove, CarNotFound
+from data_loader import data_loader
+
 class RushHourPuzzle:
     """
     Implementation of the Rush Hour Puzzle.
@@ -17,11 +20,109 @@ class RushHourPuzzle:
     There is no justified spacing in the actual snapshots, it's just for my personal OCD.
     """
 
-    def __init__(self, N: int = 6):
-        self.N = N
-        self.vehicles = {}
-        self.exit = ('right', 2)
+    def __init__(self, id, exit, min_moves, board):
+        self.id =id # puzzle id
+        self.exit = exit # [row, col]
+        self.min_moves = min_moves # minimum moves to solve
+        self.board = board # list of lists representing the board
+        self.size = len(self.board)  # board size N x N
+       
+        # unused attributes for compatibility
+        self.N = self.size
+        self.vehicles = {}  # vehicle_id: (row, col, length, direction)
     
+    def find_car_position(self, car):
+        car_positions = []
+        orientation = None
+        for r in range(self.size):
+            for c in range(self.size):
+                if self.board[r][c] == car: #found the car
+                    car_positions.append((r, c))
+                    if self.board[r][c+1] == car: # horizontal car
+                        orientation = 'H'
+                        car_positions.append((r, c+1))
+                        if c+2 < len(self.board) and self.board[r][c+2] == car:
+                            car_positions.append((r, c+2))
+                    if self.board[r+1][c] == car: # vertical car
+                        orientation = 'V'
+                        car_positions.append((r+1, c))
+                        if self.board[r+2][c] == car:
+                            car_positions.append((r+2, c))
+
+                    return car_positions, orientation
+        return None
+
+    def move(self, car, direction, distance):
+
+        car_data = self.find_car_position(car)
+        if car_data is None:
+            raise CarNotFound(f"Car {car} not found on the board.")
+        car_positions, orientation = car_data
+        
+        if direction == 'up':
+            if orientation != 'V':
+                raise InvalidMove(f"Car {car} cannot move up; it is not vertical.")
+            r, c = car_positions[0]
+            if r - distance < 0:
+                raise InvalidMove(f"Car {car} cannot move up by {distance}; out of bounds.")
+            for step in range(1, distance + 1):
+                if self.board[r - step][c] is not None:
+                    raise InvalidMove(f"Car {car} cannot move up by {distance}; path blocked.")
+            # Move the car
+            for p in car_positions:
+                r, c = p
+                self.board[r][c] = None
+                self.board[r - distance][c] = car
+
+        elif direction == 'down':
+            if orientation != 'V':
+                raise InvalidMove(f"Car {car} cannot move down; it is not vertical.")
+            r, c = car_positions[-1]
+            if r + distance >= self.size:
+                raise InvalidMove(f"Car {car} cannot move down by {distance}; out of bounds.")
+            for step in range(1, distance + 1):
+                if self.board[r + step][c] is not None:
+                    raise InvalidMove(f"Car {car} cannot move down by {distance}; path blocked.")
+            # Move the car
+            for p in reversed(car_positions):
+                r, c = p
+                self.board[r][c] = None
+                self.board[r + distance][c] = car
+
+        elif direction == 'left':
+            if orientation != 'H':
+                raise InvalidMove(f"Car {car} cannot move left; it is not horizontal.")
+            r, c = car_positions[0]
+            if c - distance < 0:
+                raise InvalidMove(f"Car {car} cannot move left by {distance}; out of bounds.")
+            for step in range(1, distance + 1):
+                if self.board[r][c - step] is not None:
+                    raise InvalidMove(f"Car {car} cannot move left by {distance}; path blocked.")
+            # Move the car
+            for p in car_positions:
+                r, c = p
+                self.board[r][c] = None
+                self.board[r][c - distance] = car
+
+        elif direction == 'right':
+            if orientation != 'H':
+                raise InvalidMove(f"Car {car} cannot move right; it is not horizontal.")
+            r, c = car_positions[-1]
+            if c + distance >= self.size:
+                raise InvalidMove(f"Car {car} cannot move right by {distance}; out of bounds.")
+            for step in range(1, distance + 1):
+                if self.board[r][c + step] is not None:
+                    raise InvalidMove(f"Car {car} cannot move right by {distance}; path blocked.")
+            # Move the car
+            for p in reversed(car_positions):
+                r, c = p
+                self.board[r][c] = None
+                self.board[r][c + distance] = car
+                
+        else:
+            raise InvalidMove(f"Invalid direction {direction} for car {car}.")
+    
+    '''
     def set_vehicles(self, vehicles):
         self.vehicles = dict(vehicles)
         self._validate()
@@ -76,8 +177,11 @@ class RushHourPuzzle:
         # enforce red-car convention: horizontal only
         if 'X' in self.vehicles and self.vehicles['X'][3] != 'H':
             raise ValueError("red car 'X' must be horizontal")
+    '''
 
 if __name__ == "__main__":
+
+    '''
     import data_loader as dl
 
     board = RushHourPuzzle()
@@ -94,3 +198,9 @@ if __name__ == "__main__":
 
     puzzles = dl.data_loader("./dataset/rush_hour_puzzles.json")
     print(puzzles[1])
+    '''
+    test_puzzle = data_loader("./dataset/rush_no_wall_1000_balanced.json")[1]
+    puzzle1 = RushHourPuzzle(id= test_puzzle['id'], exit= test_puzzle['exit'], min_moves= test_puzzle['min_moves'], board= test_puzzle['board'])
+    puzzle1.move('B', 'left', 2)
+    print(puzzle1.board)
+    pass
