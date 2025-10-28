@@ -3,3 +3,4 @@ __pycache__/
 .DS_Storedataset/rush.txt
 dataset/rush.txt
 dataset/rush.txt
+.DS_Store
