@@ -122,6 +122,10 @@ class RushHourPuzzle:
         else:
             raise InvalidMove(f"Invalid direction {direction} for car {car}.")
     
+    def solved(self):
+        exit_row, exit_col = self.exit
+        return self.board[exit_row][exit_col] == 'X'
+    
     '''
     def set_vehicles(self, vehicles):
         self.vehicles = dict(vehicles)
