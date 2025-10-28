@@ -1,2 +1,3 @@
 google-genai
+transformers
 python-dotenv
