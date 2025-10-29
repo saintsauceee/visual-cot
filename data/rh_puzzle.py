@@ -1,5 +1,5 @@
-from rh_exceptions import InvalidMove, CarNotFound
-from data_loader import data_loader
+from data.rh_exceptions import *
+from data.data_loader import *
 
 class RushHourPuzzle:
     """
@@ -123,8 +123,9 @@ class RushHourPuzzle:
             raise InvalidMove(f"Invalid direction {direction} for car {car}.")
     
     def solved(self):
-        exit_row, exit_col = self.exit
-        return self.board[exit_row][exit_col] == 'X'
+        exit_row = self.exit[0]
+        exit_col = self.exit[1]
+        return self.board[exit_row-1][exit_col-1] == 'R'
     
     '''
     def set_vehicles(self, vehicles):
