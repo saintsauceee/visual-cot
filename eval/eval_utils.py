@@ -1,15 +1,15 @@
 import sys, os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
+import random
 from data.data_loader import *
 from data.rh_puzzle import *
 
-def evaluate_solution(puzzle, solution):
+def eval_sol(puzzle, solution):
 
     puzzle_obj = RushHourPuzzle(
         id=puzzle["id"],
         exit=puzzle["exit"],
-        min_moves=puzzle.get("minimum_number_moves", None),
+        min_moves=puzzle.get("min_moves", None),
         board=puzzle["board"]
     )
 
@@ -33,9 +33,38 @@ def evaluate_solution(puzzle, solution):
     
     return completed_moves, success, error
 
-if __name__ == "__main__":
-    # Example usage
+def get_eval_ids():
     
+    full_dataset = data_loader()
+
+    grouped = {}
+
+    # Group puzzles by minimal required number of moves
+    for pid, puzzle in full_dataset.items():
+        min_moves = puzzle["min_moves"]
+        grouped.setdefault(min_moves, []).append(pid)
+
+    # Create a set for testing samples and another for few shots prompting
+    test_ids = {}
+    fsp_ids = {}
+
+    # Split dataset into test set and few (3) shots prompting set
+    for min_moves, ids in grouped.items():
+        if len(ids) >= 8:
+            random_samples = random.sample(ids, 8)
+            test_ids[min_moves] = random_samples[0:5]
+            fsp_ids[min_moves] = random_samples[5:]
+        else:
+            test_ids[min_moves] = ids
+
+    return test_ids, fsp_ids
+
+
+if __name__ == "__main__":
+    test_set, fsp_set = get_eval_ids()
+    print(fsp_set)
+    '''
+    # Example usage
     puzzle = data_loader("./dataset/rush_no_wall_1000_balanced.json")[33]
 
     solution = [
@@ -46,3 +75,4 @@ if __name__ == "__main__":
 
     moves, success, error = evaluate_solution(puzzle, solution)
     print(f"Moves made: {moves}, Success: {success}, Error: {error}")
+    '''

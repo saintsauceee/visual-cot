@@ -38,15 +38,17 @@ class RushHourPuzzle:
             for c in range(self.size):
                 if self.board[r][c] == car: #found the car
                     car_positions.append((r, c))
-                    if self.board[r][c+1] == car: # horizontal car
+
+                    if c + 1 < self.size and self.board[r][c+1] == car: # horizontal car
                         orientation = 'H'
                         car_positions.append((r, c+1))
-                        if c+2 < len(self.board) and self.board[r][c+2] == car:
+                        if c+2 < self.size and self.board[r][c+2] == car:
                             car_positions.append((r, c+2))
-                    if self.board[r+1][c] == car: # vertical car
+
+                    if  r + 1 < self.size and self.board[r+1][c] == car: # vertical car
                         orientation = 'V'
                         car_positions.append((r+1, c))
-                        if self.board[r+2][c] == car:
+                        if r + 2 < self.size and self.board[r+2][c] == car:
                             car_positions.append((r+2, c))
 
                     return car_positions, orientation
@@ -69,9 +71,9 @@ class RushHourPuzzle:
                 if self.board[r - step][c] is not None:
                     raise InvalidMove(f"Car {car} cannot move up by {distance}; path blocked.")
             # Move the car
-            for p in car_positions:
-                r, c = p
+            for (r, c) in car_positions:
                 self.board[r][c] = None
+            for (r, c) in car_positions:
                 self.board[r - distance][c] = car
 
         elif direction == 'down':
@@ -84,9 +86,9 @@ class RushHourPuzzle:
                 if self.board[r + step][c] is not None:
                     raise InvalidMove(f"Car {car} cannot move down by {distance}; path blocked.")
             # Move the car
-            for p in reversed(car_positions):
-                r, c = p
+            for (r, c) in car_positions:
                 self.board[r][c] = None
+            for (r, c) in car_positions:
                 self.board[r + distance][c] = car
 
         elif direction == 'left':
@@ -99,9 +101,9 @@ class RushHourPuzzle:
                 if self.board[r][c - step] is not None:
                     raise InvalidMove(f"Car {car} cannot move left by {distance}; path blocked.")
             # Move the car
-            for p in car_positions:
-                r, c = p
+            for (r, c) in car_positions:
                 self.board[r][c] = None
+            for (r, c) in car_positions:
                 self.board[r][c - distance] = car
 
         elif direction == 'right':
@@ -114,10 +116,11 @@ class RushHourPuzzle:
                 if self.board[r][c + step] is not None:
                     raise InvalidMove(f"Car {car} cannot move right by {distance}; path blocked.")
             # Move the car
-            for p in reversed(car_positions):
-                r, c = p
+            for (r, c) in car_positions:
                 self.board[r][c] = None
+            for (r, c) in car_positions:
                 self.board[r][c + distance] = car
+
                 
         else:
             raise InvalidMove(f"Invalid direction {direction} for car {car}.")
