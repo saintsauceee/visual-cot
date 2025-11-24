@@ -56,6 +56,7 @@ def get_eval_ids():
             fsp_ids[min_moves] = random_samples[5:]
         else:
             test_ids[min_moves] = ids
+            fsp_ids[min_moves] = []
 
     return test_ids, fsp_ids
 
