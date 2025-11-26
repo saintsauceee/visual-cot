@@ -1,0 +1,83 @@
+{
+    "67": {
+      "name": 67,
+      "exit": [3, 6],
+      "min_num_moves": 5,
+      "board": [
+        ["B", "B", "C", "C", "C", null],
+        [null, null, null, "G", null, null],
+        ["R", "R", null, "G", null, null],
+        [null, "F", "D", "D", "D", null],
+        [null, "F", null, null, null, null],
+        ["E", "E", "E", null, null, null]
+      ],
+      "solution":[
+          {"name": "E", "direction": "right", "distance": 2},
+          {"name": "F", "direction": "down", "distance": 1},
+          {"name": "D", "direction": "left", "distance": 2},
+          {"name": "G", "direction": "down", "distance": 2},
+          {"name": "R", "direction": "right", "distance": 4}
+      ]
+    },
+
+    "180": {
+      "name": 180,
+      "exit": [3, 6],
+      "min_num_moves": 10,
+      "board": [
+        ["B", "B", "B", "C", "C", "J"],
+        [null, null, null, null, null, "J"],
+        [null, null, "R", "R", null, "J"],
+        [null, null, null, "I", "D", "D"],
+        ["E", "E", "E", "I", "F", "F"],
+        [null, "G", "G", "H", "H", "H"]
+      ],
+      "solution":[
+          {"name": "R", "direction": "left", "distance": 1},
+          {"name": "I", "direction": "up", "distance": 2},
+          {"name": "F", "direction": "left", "distance": 1},
+          {"name": "D", "direction": "left", "distance": 1},
+          {"name": "G", "direction": "left", "distance": 1},
+          {"name": "H", "direction": "left", "distance": 1},
+          {"name": "J", "direction": "down", "distance": 3},
+          {"name": "C", "direction": "right", "distance": 1},
+          {"name": "I", "direction": "up", "distance": 1},
+          {"name": "R", "direction": "right", "distance": 3}
+      ]
+    },
+    "442": {
+      "name": 442,
+      "exit": [3, 6],
+      "min_num_moves": 20,
+      "board": [
+        ["H", "B", "B", "B", "C", "C"],
+        ["H", null, "J", "K", null, null],
+        ["R", "R", "J", "K", null, "M"],
+        ["I", "D", "D", "E", "E", "M"],
+        ["I", null, null, "L", null, null],
+        ["F", "F", "F", "L", "G", "G"]
+      ],
+      "solution":[
+          {"name": "M", "direction": "up", "distance": 1},
+          {"name": "E", "direction": "right", "distance": 1},
+          {"name": "L", "direction": "up", "distance": 1},
+          {"name": "F", "direction": "right", "distance": 1},
+          {"name": "I", "direction": "down", "distance": 1},
+          {"name": "D", "direction": "left", "distance": 1},
+          {"name": "J", "direction": "down", "distance": 2},
+          {"name": "R", "direction": "right", "distance": 1},
+          {"name": "H", "direction": "down", "distance": 1},
+          {"name": "B", "direction": "left", "distance": 1},
+          {"name": "K", "direction": "up", "distance": 1},
+          {"name": "R", "direction": "right", "distance": 2},
+          {"name": "J", "direction": "up", "distance": 2},
+          {"name": "D", "direction": "right", "distance": 1},
+          {"name": "I", "direction": "up", "distance": 1},
+          {"name": "F", "direction": "left", "distance": 1},
+          {"name": "L", "direction": "down", "distance": 1},
+          {"name": "E", "direction": "left", "distance": 1},
+          {"name": "M", "direction": "down", "distance": 2},
+          {"name": "R", "direction": "right", "distance": 1}
+      ]
+    }
+}
