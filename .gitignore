@@ -4,3 +4,4 @@ __pycache__/
 dataset/rush.txt
 dataset/rush.txt
 .DS_Store
+.venv
