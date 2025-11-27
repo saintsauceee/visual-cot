@@ -13625,7 +13625,7 @@ def sft(
 ) -> None:
     """ SFT Pipeline """
     
-    tokenizer, model = load_model_from_hf(model_name)
+    tokenizer, model = load_model_from_hf()
 
     data = Dataset.from_list(raw_data)
 
