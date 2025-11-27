@@ -13513,6 +13513,7 @@ def create_dataset(data=data, train_ids=train_ids, test_ids=test_ids):
 
     for level in range(3, 21):
       level_key = str(level)
+      print(f"Processing level {level}...")
 
       for pid in train_ids.get(level_key, []):
         d = data_by_id.get(pid)
@@ -13521,7 +13522,7 @@ def create_dataset(data=data, train_ids=train_ids, test_ids=test_ids):
 
         solved_moves = solve_from_sample(d)
 
-        print(f"Level {level} - Solved train puzzle ID: {d["id"]} Moves: {len(solved_moves)} (Min: {d["min_num_moves"]})")
+        # print(f"Level {level} - Solved train puzzle ID: {d["id"]} Moves: {len(solved_moves)} (Min: {d["min_num_moves"]})")
 
         train_dataset.append(
           RushHourSample(
@@ -13540,7 +13541,7 @@ def create_dataset(data=data, train_ids=train_ids, test_ids=test_ids):
 
         solved_moves = solve_from_sample(d)
 
-        print(f"Level {level} - Solved test puzzle ID: {d["id"]} Moves: {len(solved_moves)} (Min: {d["min_num_moves"]})")
+        # print(f"Level {level} - Solved test puzzle ID: {d["id"]} Moves: {len(solved_moves)} (Min: {d["min_num_moves"]})")
 
         test_dataset.append(
           RushHourSample(
@@ -13617,7 +13618,7 @@ def format_sample(puzzle: RushHourSample) -> str:
     return prompt + '\nSolution:\n' + target_list
 
 def sft(
-    model_name: str, 
+    model_name: str,
     raw_data: list[dict[str, str]], 
     train_args: TrainingArguments,
     output_dir: str = "sft_out",
@@ -13654,18 +13655,22 @@ def sft(
 
 if __name__ == "__main__":
     train_puzzles, test_puzzles = create_dataset()
-    print(train_puzzles[:5])
+    # print(train_puzzles[:5])
     
     raw_data = [{"text": format_sample(puzzle)} for puzzle in train_puzzles]
 
     args = TrainingArguments(
         output_dir="sft_out",
+
+        num_train_epochs=8,
+        learning_rate=1e-4,
+        warmup_ratio = 0.03,
+        lr_scheduler_type = "cosine",
         per_device_train_batch_size=4,      # fits 4-bit + LoRA
-        num_train_epochs=1,
-        learning_rate=2e-4,                 # for LoRA
-        weight_decay=0.0,                   # LoRA: usually 0
-        bf16=True,                          # A100 supports bf16
         gradient_checkpointing=True,        # saves VRAM
+        
+        weight_decay=0.0,
+        bf16=True,                          # A100 supports bf16
         logging_steps=5,
         group_by_length=True,
         push_to_hub=True,

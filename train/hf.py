@@ -34,9 +34,9 @@ def load_model_from_hf(model_name: str = MODEL_NAME_STR):
 
     # LoRA config
     lora_config = LoraConfig(
-        r=64,
+        r=32,
         lora_alpha=16,
-        lora_dropout=0.1,
+        lora_dropout=0.05,
         bias="none",
         task_type="CAUSAL_LM",
         target_modules=[
