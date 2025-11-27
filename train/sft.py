@@ -13521,7 +13521,7 @@ def create_dataset(data=data, train_ids=train_ids, test_ids=test_ids):
 
         solved_moves = solve_from_sample(d)
 
-        print(f"Level {level} - Solved train puzzle ID:", d["id"], "Moves:", len(solved_moves), "(Expected:", d["min_num_moves"], ")")
+        print(f"Level {level} - Solved train puzzle ID: {d["id"]} Moves: {len(solved_moves)} (Min: {d["min_num_moves"]})")
 
         train_dataset.append(
           RushHourSample(
@@ -13540,7 +13540,7 @@ def create_dataset(data=data, train_ids=train_ids, test_ids=test_ids):
 
         solved_moves = solve_from_sample(d)
 
-        print(f"Level {level} - Solved test puzzle ID:", d["id"], "Moves:", len(solved_moves), "(Expected:", d["min_num_moves"], ")")
+        print(f"Level {level} - Solved test puzzle ID: {d["id"]} Moves: {len(solved_moves)} (Min: {d["min_num_moves"]})")
 
         test_dataset.append(
           RushHourSample(
@@ -13602,7 +13602,7 @@ def build_prompt(board: str, exit: str | tuple[int, int], output_example: list[d
 
     return prompt
 
-def format_sample(puzzle: RushHourSample = sample_puzzle) -> str:
+def format_sample(puzzle: RushHourSample) -> str:
     def board_to_str(board: list[list[str]]) -> str:
         return "\n".join("".join(row) for row in board)
     
@@ -13647,33 +13647,33 @@ def sft(
     )
     trainer.train()
 
+    trainer.push_to_hub("SFT rush hour v1")
+
     model.save_pretrained(output_dir)
     tokenizer.save_pretrained(output_dir)
 
 if __name__ == "__main__":
-    # print(format_sample())
-
     train_puzzles, test_puzzles = create_dataset()
     print(train_puzzles[:5])
     
-    # raw_data = [{"text": format_sample(puzzle)} for puzzle in train_puzzles]
+    raw_data = [{"text": format_sample(puzzle)} for puzzle in train_puzzles]
 
-    # print(raw_data[0]["text"])  # Debug: print first sample
-
-    # args = TrainingArguments(
-    #     output_dir="sft_out",
-    #     per_device_train_batch_size=4,      # fits 4-bit + LoRA
-    #     gradient_accumulation_steps=8,
-    #     num_train_epochs=3,
-    #     learning_rate=2e-4,                 # for LoRA
-    #     lr_scheduler_type="cosine",
-    #     weight_decay=0.0,                   # LoRA: usually 0
-    #     bf16=True,                          # A100 supports bf16
-    #     gradient_checkpointing=True,        # saves VRAM
-    #     logging_steps=10,
-    #     group_by_length=True,
-    #     push_to_hub=True,
-    #     hub_model_id="saintsauce/qwen3-rushhour-sft"
-    # )
+    args = TrainingArguments(
+        output_dir="sft_out",
+        per_device_train_batch_size=4,      # fits 4-bit + LoRA
+        num_train_epochs=1,
+        learning_rate=2e-4,                 # for LoRA
+        weight_decay=0.0,                   # LoRA: usually 0
+        bf16=True,                          # A100 supports bf16
+        gradient_checkpointing=True,        # saves VRAM
+        logging_steps=5,
+        group_by_length=True,
+        push_to_hub=True,
+        hub_model_id="saintsauce/qwen3-rushhour-sft"
+    )
     
-    # sft("Qwen/Qwen3-8B", raw_data=[], train_args=args)
+    sft(
+        "Qwen/Qwen3-8B", 
+        raw_data=raw_data,
+        train_args=args
+    )
