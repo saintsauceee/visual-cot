@@ -1,7 +1,10 @@
+import copy
 from datasets import Dataset
 from transformers import Trainer, TrainingArguments, DataCollatorForLanguageModeling
 from hf import load_model_from_hf
+from puzzle import RushHourPuzzle
 from rh import RushHourSample
+from typing import List, Optional
 from solver import solve_puzzle
 
 data: list[dict[str, int | tuple[int, int] | list[list[str]]]] = [
@@ -13477,37 +13480,77 @@ test_ids: dict[str, list[int]] = {
 #     29
 # ]
 
-def create_dataset(data=data, train_ids=train_ids, test_ids=test_ids):
-    train_dataset = []
-    test_dataset = []
+def board_for_solver(board: List[List[str]]) -> List[List[Optional[str]]]:
+    return [
+        [None if cell == "." else cell for cell in row]
+        for row in board
+    ]
 
-    # Build a lookup for data by id
+def create_dataset(data=data, train_ids=train_ids, test_ids=test_ids):
+    train_dataset: list[RushHourSample] = []
+    test_dataset: list[RushHourSample] = []
+
+    # build a lookup for data by id
     data_by_id = {sample["id"]: sample for sample in data}
 
+    def solve_from_sample(d):
+      norm_board = board_for_solver(d["board"])
+
+      puzzle = RushHourPuzzle(
+          id=d["id"],
+          exit=d["exit"],
+          min_num_moves=d["min_num_moves"],
+          board=copy.deepcopy(norm_board),
+      )
+
+      solution = solve_puzzle(puzzle)   # BFS
+      if solution is None:
+        solution = []  # unsolvable (rare but safe fallback)
+
+      # Solution is already in your desired format:
+      # [{'name': 'E', 'direction': 'right', 'distance': 2}, ...]
+      return solution
+
     for level in range(3, 21):
-        level_key = str(level)
+      level_key = str(level)
 
-        for pid in train_ids.get(level_key, []):
-            d = data_by_id.get(pid)
-            if d is not None:
-                train_dataset.append(RushHourSample(
-                    id=d["id"],
-                    board=d["board"],
-                    exit=d["exit"],
-                    min_num_moves=d["min_num_moves"],
-                    solution_moves=d["solution_moves"],
-                ))
+      for pid in train_ids.get(level_key, []):
+        d = data_by_id.get(pid)
+        if d is None:
+          continue
 
-        for pid in test_ids.get(level_key, []):
-            d = data_by_id.get(pid)
-            if d is not None:
-                test_dataset.append(RushHourSample(
-                    id=d["id"],
-                    board=d["board"],
-                    exit=d["exit"],
-                    min_num_moves=d["min_num_moves"],
-                    solution_moves=d["solution_moves"],
-                ))
+        solved_moves = solve_from_sample(d)
+
+        print(f"Level {level} - Solved train puzzle ID: {d["id"]} Moves: {len(solved_moves)} (Min: {d["min_num_moves"]})")
+
+        train_dataset.append(
+          RushHourSample(
+            id=d["id"],
+            board=copy.deepcopy(d["board"]),
+            exit=d["exit"],
+            min_num_moves=d["min_num_moves"],
+            solution_moves=solved_moves,
+          )
+        )
+
+      for pid in test_ids.get(level_key, []):
+        d = data_by_id.get(pid)
+        if d is None:
+          continue
+
+        solved_moves = solve_from_sample(d)
+
+        print(f"Level {level} - Solved test puzzle ID: {d["id"]} Moves: {len(solved_moves)} (Min: {d["min_num_moves"]})")
+
+        test_dataset.append(
+          RushHourSample(
+            id=d["id"],
+            board=d["board"],
+            exit=d["exit"],
+            min_num_moves=d["min_num_moves"],
+            solution_moves=solved_moves,
+          )
+        )
 
     return train_dataset, test_dataset
 
@@ -13559,7 +13602,7 @@ def build_prompt(board: str, exit: str | tuple[int, int], output_example: list[d
 
     return prompt
 
-def format_sample(puzzle: RushHourSample = sample_puzzle) -> str:
+def format_sample(puzzle: RushHourSample) -> str:
     def board_to_str(board: list[list[str]]) -> str:
         return "\n".join("".join(row) for row in board)
     
@@ -13604,34 +13647,33 @@ def sft(
     )
     trainer.train()
 
+    trainer.push_to_hub("SFT rush hour v1")
+
     model.save_pretrained(output_dir)
     tokenizer.save_pretrained(output_dir)
 
 if __name__ == "__main__":
-    # print(format_sample())
-
     train_puzzles, test_puzzles = create_dataset()
-
-    train_puzzles = train_puzzles[:5]
+    print(train_puzzles[:5])
     
-    # raw_data = [{"text": format_sample(puzzle)} for puzzle in train_puzzles]
+    raw_data = [{"text": format_sample(puzzle)} for puzzle in train_puzzles]
 
-    # print(raw_data[0]["text"])  # Debug: print first sample
-
-    # args = TrainingArguments(
-    #     output_dir="sft_out",
-    #     per_device_train_batch_size=4,      # fits 4-bit + LoRA
-    #     gradient_accumulation_steps=8,
-    #     num_train_epochs=3,
-    #     learning_rate=2e-4,                 # for LoRA
-    #     lr_scheduler_type="cosine",
-    #     weight_decay=0.0,                   # LoRA: usually 0
-    #     bf16=True,                          # A100 supports bf16
-    #     gradient_checkpointing=True,        # saves VRAM
-    #     logging_steps=10,
-    #     group_by_length=True,
-    #     push_to_hub=True,
-    #     hub_model_id="saintsauce/qwen3-rushhour-sft"
-    # )
+    args = TrainingArguments(
+        output_dir="sft_out",
+        per_device_train_batch_size=4,      # fits 4-bit + LoRA
+        num_train_epochs=1,
+        learning_rate=2e-4,                 # for LoRA
+        weight_decay=0.0,                   # LoRA: usually 0
+        bf16=True,                          # A100 supports bf16
+        gradient_checkpointing=True,        # saves VRAM
+        logging_steps=5,
+        group_by_length=True,
+        push_to_hub=True,
+        hub_model_id="saintsauce/qwen3-rushhour-sft"
+    )
     
-    # sft("Qwen/Qwen3-8B", raw_data=[], train_args=args)
+    sft(
+        "Qwen/Qwen3-8B", 
+        raw_data=raw_data,
+        train_args=args
+    )
