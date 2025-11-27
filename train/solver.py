@@ -3,9 +3,8 @@ import copy
 from collections import deque
 
 from puzzle import RushHourPuzzle, InvalidMove, CarNotFound
-from typing import List, Optional
 
-def board_for_prompt(board: List[List[str]]) -> str:
+def board_for_prompt(board: list[list[str]]) -> str:
     return "\n".join("".join(row) for row in board)
 
 def board_key(puzzle: RushHourPuzzle):
