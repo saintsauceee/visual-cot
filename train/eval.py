@@ -6,7 +6,7 @@ from sft import create_dataset, build_prompt
 def board_to_str(board: list[list[str]]) -> str:
     return "\n".join("".join(row) for row in board)
 
-MODEL_NAME_STR = "Qwen/Qwen3-8B"  # base text-only model
+MODEL_NAME_STR = "Qwen/Qwen2.5-7B-Instruct"  # base text-only model
 
 tokenizer, model = load_model_from_hf(MODEL_NAME_STR)
 model.eval()

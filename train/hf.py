@@ -6,7 +6,7 @@ from transformers import (
 )
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 
-MODEL_NAME_STR = "Qwen/Qwen3-8B"  # base text-only model
+MODEL_NAME_STR = "Qwen/Qwen2.5-7B-Instruct"  # base text-only model
 
 def load_model_from_hf(model_name: str = MODEL_NAME_STR):
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
