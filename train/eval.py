@@ -1,3 +1,4 @@
+import time
 import torch
 from hf import load_model_from_hf
 from sft import create_dataset, build_prompt
@@ -33,6 +34,7 @@ def evaluate_sample(idx: int):
     )
     inputs = {k: v.to(model.device) for k, v in inputs.items()}
 
+    start = time.perf_counter()
     with torch.no_grad():
         generated = model.generate(
             **inputs,
@@ -40,6 +42,10 @@ def evaluate_sample(idx: int):
             do_sample=False,      # greedy for now
             temperature=0.0,
         )
+    end = time.perf_counter()
+
+    infer_time = end - start
+    print(f"\nInference time: {infer_time:.3f} seconds")
 
     gen_ids = generated[0][inputs["input_ids"].shape[1]:]
     gen_text = tokenizer.decode(gen_ids, skip_special_tokens=True).strip()
