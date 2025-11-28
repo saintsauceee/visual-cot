@@ -1,3 +1,4 @@
+import time
 import torch
 from hf import load_model_from_hf
 from sft import create_dataset, build_prompt
@@ -12,48 +13,52 @@ model.eval()
 
 train_puzzles, test_puzzles = create_dataset()
 
-output_example = [
-    {"name": "B", "direction": "left", "distance": 1},
-    {"name": "C", "direction": "down", "distance": 3},
-    {"name": "R", "direction": "right", "distance": 4},
-]
+def evaluate_sample(idx: int):
+    sample = test_puzzles[idx]
 
-sample = test_puzzles[0]
+    prompt_example = build_prompt(
+        board_to_str(sample.board), 
+        sample.exit
+    ) + '\nSolution:\n'
 
-prompt_example = build_prompt(
-    board_to_str(sample.board), 
-    sample.exit, 
-    output_example
-) + '\nSolution:\n'
+    print("\n")
 
-print("\n\n")
+    print("Example Prompt:\n")
+    print(prompt_example)
 
-print("Example Prompt:\n")
-print(prompt_example)
-
-inputs = tokenizer(
-    prompt_example, 
-    return_tensors="pt",
-    truncation=True,
-    max_length=2048,
-)
-inputs = {k: v.to(model.device) for k, v in inputs.items()}
-
-with torch.no_grad():
-    generated = model.generate(
-        **inputs,
-        max_new_tokens=128,
-        do_sample=False,      # greedy for now
-        temperature=0.0,
+    inputs = tokenizer(
+        prompt_example, 
+        return_tensors="pt",
+        truncation=True,
+        max_length=2048,
     )
+    inputs = {k: v.to(model.device) for k, v in inputs.items()}
 
-gen_ids = generated[0][inputs["input_ids"].shape[1]:]
-gen_text = tokenizer.decode(gen_ids, skip_special_tokens=True).strip()
+    start = time.perf_counter()
+    with torch.no_grad():
+        generated = model.generate(
+            **inputs,
+            max_new_tokens=512,
+            do_sample=False,      # greedy for now
+            temperature=0.0,
+        )
+    end = time.perf_counter()
 
-print("Generated Solution:\n")
-print(gen_text)
+    infer_time = end - start
+    print(f"\nInference time: {infer_time:.3f} seconds")
 
-print("\n\n")
+    gen_ids = generated[0][inputs["input_ids"].shape[1]:]
+    gen_text = tokenizer.decode(gen_ids, skip_special_tokens=True).strip()
 
-print("Ground-truth Solution:\n")
-print(sample.solution_moves)
+    print("\n\n")
+
+    print("Generated Solution:\n")
+    print(gen_text)
+
+    print("\n\n")
+
+    print("Ground-truth Solution:\n")
+    print(sample.solution_moves)
+
+if __name__ == "__main__":
+    evaluate_sample(0)
