@@ -152,7 +152,8 @@ def aggregate(results):
     return levels, success, label_counts
 
 if __name__ == "__main__":
-    tokenizer, model = load_model_from_hf(model_name="saintsauce/qwen3-rushhour-sft")
+    model_name_str = "saintsauce/qwen3-rushhour-sft"
+    tokenizer, model = load_model_from_hf(model_name=model_name_str)
     model.eval()
 
     _, test_puzzles = create_dataset()
@@ -165,7 +166,7 @@ if __name__ == "__main__":
     plt.bar(levels, success)
     plt.xlabel("Level")
     plt.ylabel("Success Rate")
-    plt.title("Qwen2.5 (0SP) - Success Rate by Level")
+    plt.title(f"{model_name_str} (0SP) - Success Rate by Level")
     fname1 = f"success_rate_by_level_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
     plt.savefig(fname1, bbox_inches='tight')
     print(f"Saved plot: {os.path.abspath(fname1)}")
@@ -178,7 +179,7 @@ if __name__ == "__main__":
     plt.bar(range(len(labels)), counts)
     plt.xticks(range(len(labels)), labels, rotation=45, ha="right")
     plt.ylabel("Count")
-    plt.title("Qwen2.5 (0SP) - Label Distribution")
+    plt.title(f"{model_name_str} (0SP) - Label Distribution")
     plt.tight_layout()
     fname2 = f"label_distribution_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
     plt.savefig(fname2, bbox_inches='tight')
