@@ -13585,19 +13585,27 @@ output_example = [
 ]
 
 def build_prompt(board: str, exit: str | tuple[int, int], output_example: list[dict[str, str | int]] = output_example) -> str:
-    """ Build prompt for SFT sample """
-    
     board_str = board
     example_str = repr(output_example) # e.g. ["B down 1", "R right 2"]
 
     prompt = (
         "You have to solve the following 6x6 Rush Hour puzzle.\n"
         "Your goal is to move the red car out.\n"
-        "On the board, 'R' designates the Red car.\n" 
+        "On the board, 'R' designates the Red car.\n"
         f"The exit is located at {exit}.\n\n"
+        "Rules:\n"
+        "- The board is a 6x6 grid.\n"
+        "- Each car is a horizontal or vertical line of identical letters.\n"
+        "- Horizontal cars can only move left or right.\n"
+        "- Vertical cars can only move up or down.\n"
+        "- Cars cannot move outside the board.\n"
+        "- Cars cannot pass through or overlap other cars.\n"
+        "- Each move must be legal under these rules.\n\n"
         "This is the board:\n"
         f"{board_str}\n\n"
-        "Your output needs the following format:\n"
+        "Your output must be a Python list of moves.\n"
+        "Each move is a dict with keys 'name', 'direction', 'distance'.\n"
+        "Here is an example of the correct format:\n"
         f"{example_str}\n\n"
         "Return only a Python list of moves, no explanation.\n"
         "Provide only the text response with no bolding or formatting.\n"
@@ -13658,29 +13666,31 @@ def sft(
 if __name__ == "__main__":
     train_puzzles, _ = create_dataset(True, False)
     # print(train_puzzles[:5])
+
+    print(format_sample(train_puzzles[0]))
     
-    raw_data = [{"text": format_sample(puzzle)} for puzzle in train_puzzles]
+    # raw_data = [{"text": format_sample(puzzle)} for puzzle in train_puzzles]
 
-    args = TrainingArguments(
-        output_dir="sft_out",
+    # args = TrainingArguments(
+    #     output_dir="sft_out",
 
-        num_train_epochs=8,
-        learning_rate=2e-4,
-        warmup_ratio = 0.03,
-        lr_scheduler_type = "cosine",
-        per_device_train_batch_size=4,      # fits 4-bit + LoRA
-        gradient_checkpointing=True,        # saves VRAM
+    #     num_train_epochs=8,
+    #     learning_rate=2e-4,
+    #     warmup_ratio = 0.03,
+    #     lr_scheduler_type = "cosine",
+    #     per_device_train_batch_size=4,      # fits 4-bit + LoRA
+    #     gradient_checkpointing=True,        # saves VRAM
         
-        weight_decay=0.0,
-        bf16=True,                          # A100 supports bf16
+    #     weight_decay=0.0,
+    #     bf16=True,                          # A100 supports bf16
 
-        group_by_length=True,
-        push_to_hub=True,
-        hub_model_id="saintsauce/Qwen2.5-7B-RushHour-SFT"
-    )
+    #     group_by_length=True,
+    #     push_to_hub=True,
+    #     hub_model_id="saintsauce/Qwen2.5-7B-RushHour-SFT"
+    # )
     
-    sft(
-        "Qwen/Qwen2.5-7B-Instruct",
-        raw_data=raw_data,
-        train_args=args
-    )
+    # sft(
+    #     "Qwen/Qwen2.5-7B-Instruct",
+    #     raw_data=raw_data,
+    #     train_args=args
+    # )
