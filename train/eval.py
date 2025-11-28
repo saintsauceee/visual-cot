@@ -13,7 +13,7 @@ model.eval()
 
 train_puzzles, test_puzzles = create_dataset()
 
-def evaluate_sample(idx: int):
+def evaluate_sample(idx: int, message: str | None = None):
     sample = test_puzzles[idx]
 
     prompt_example = build_prompt(
@@ -44,9 +44,6 @@ def evaluate_sample(idx: int):
         )
     end = time.perf_counter()
 
-    infer_time = end - start
-    print(f"\nInference time: {infer_time:.3f} seconds")
-
     gen_ids = generated[0][inputs["input_ids"].shape[1]:]
     gen_text = tokenizer.decode(gen_ids, skip_special_tokens=True).strip()
 
@@ -60,5 +57,8 @@ def evaluate_sample(idx: int):
     print("Ground-truth Solution:\n")
     print(sample.solution_moves)
 
+    infer_time = end - start
+    print(f"\nInference time: {infer_time:.3f} seconds")
+
 if __name__ == "__main__":
-    evaluate_sample(0)
+    evaluate_sample(5)
