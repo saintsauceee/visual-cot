@@ -8,6 +8,7 @@ from sft import create_dataset, build_prompt
 from collections import defaultdict, Counter
 import matplotlib.pyplot as plt
 import os
+from tqdm import tqdm
 from datetime import datetime
 
 def board_to_str(board: list[list[str]]) -> str:
@@ -116,7 +117,7 @@ def evaluate_sample(idx: int, verbose: bool = False):
 
 def model_evaluate():
     results = []
-    for idx, puzzle in enumerate(test_puzzles):
+    for idx, puzzle in enumerate(tqdm(test_puzzles, desc="Evaluating", unit="puzzle"), start=0):
         valid, label, infer_time = evaluate_sample(idx, verbose=False)
         level = getattr(puzzle, "min_num_moves", None)
         results.append({
@@ -151,7 +152,7 @@ def aggregate(results):
     return levels, success, label_counts
 
 if __name__ == "__main__":
-    tokenizer, model = load_model_from_hf()
+    tokenizer, model = load_model_from_hf(model_name="saintsauce/qwen3-rushhour-sft")
     model.eval()
 
     _, test_puzzles = create_dataset()
