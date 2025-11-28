@@ -13667,30 +13667,30 @@ if __name__ == "__main__":
     train_puzzles, _ = create_dataset(True, False)
     # print(train_puzzles[:5])
 
-    print(format_sample(train_puzzles[0]))
+    # print(format_sample(train_puzzles[0]))
     
-    # raw_data = [{"text": format_sample(puzzle)} for puzzle in train_puzzles]
+    raw_data = [{"text": format_sample(puzzle)} for puzzle in train_puzzles]
 
-    # args = TrainingArguments(
-    #     output_dir="sft_out",
+    args = TrainingArguments(
+        output_dir="sft_out",
 
-    #     num_train_epochs=8,
-    #     learning_rate=2e-4,
-    #     warmup_ratio = 0.03,
-    #     lr_scheduler_type = "cosine",
-    #     per_device_train_batch_size=4,      # fits 4-bit + LoRA
-    #     gradient_checkpointing=True,        # saves VRAM
+        num_train_epochs=8,
+        learning_rate=2e-4,
+        warmup_ratio = 0.03,
+        lr_scheduler_type = "cosine",
+        per_device_train_batch_size=4,      # fits 4-bit + LoRA
+        gradient_checkpointing=True,        # saves VRAM
         
-    #     weight_decay=0.0,
-    #     bf16=True,                          # A100 supports bf16
+        weight_decay=0.0,
+        bf16=True,                          # A100 supports bf16
 
-    #     group_by_length=True,
-    #     push_to_hub=True,
-    #     hub_model_id="saintsauce/Qwen2.5-7B-RushHour-SFT"
-    # )
+        group_by_length=True,
+        push_to_hub=True,
+        hub_model_id="saintsauce/Qwen2.5-7B-RushHour-SFT"
+    )
     
-    # sft(
-    #     "Qwen/Qwen2.5-7B-Instruct",
-    #     raw_data=raw_data,
-    #     train_args=args
-    # )
+    sft(
+        "Qwen/Qwen2.5-7B-Instruct",
+        raw_data=raw_data,
+        train_args=args
+    )
