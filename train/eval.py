@@ -157,7 +157,7 @@ if __name__ == "__main__":
     tokenizer, model = load_model_from_hf(model_name=model_name_str)
     model.eval()
 
-    _, test_puzzles = create_dataset()
+    _, test_puzzles = create_dataset(False, True)
 
     # results = model_evaluate()
     # levels, success, label_counts = aggregate(results)

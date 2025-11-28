@@ -13486,7 +13486,7 @@ def board_for_solver(board: List[List[str]]) -> List[List[Optional[str]]]:
         for row in board
     ]
 
-def create_dataset(data=data, train_ids=train_ids, test_ids=test_ids):
+def create_dataset(include_train, include_test, data=data, train_ids=train_ids, test_ids=test_ids):
     train_dataset: list[RushHourSample] = []
     test_dataset: list[RushHourSample] = []
 
@@ -13512,46 +13512,48 @@ def create_dataset(data=data, train_ids=train_ids, test_ids=test_ids):
       return solution
 
     for level in range(3, 21):
-      level_key = str(level)
-      print(f"Processing level {level}...")
+        level_key = str(level)
+        print(f"Processing level {level}...")
 
-      for pid in train_ids.get(level_key, []):
-        d = data_by_id.get(pid)
-        if d is None:
-          continue
+        if include_train:
+            for pid in train_ids.get(level_key, []):
+                d = data_by_id.get(pid)
+                if d is None:
+                    continue
 
-        solved_moves = solve_from_sample(d)
+                solved_moves = solve_from_sample(d)
 
-        # print(f"Level {level} - Solved train puzzle ID: {d["id"]} Moves: {len(solved_moves)} (Min: {d["min_num_moves"]})")
+                # print(f"Level {level} - Solved train puzzle ID: {d["id"]} Moves: {len(solved_moves)} (Min: {d["min_num_moves"]})")
 
-        train_dataset.append(
-          RushHourSample(
-            id=d["id"],
-            board=copy.deepcopy(d["board"]),
-            exit=d["exit"],
-            min_num_moves=d["min_num_moves"],
-            solution_moves=solved_moves,
-          )
-        )
+                train_dataset.append(
+                    RushHourSample(
+                        id=d["id"],
+                        board=copy.deepcopy(d["board"]),
+                        exit=d["exit"],
+                        min_num_moves=d["min_num_moves"],
+                        solution_moves=solved_moves,
+                    )
+                )
 
-      for pid in test_ids.get(level_key, []):
-        d = data_by_id.get(pid)
-        if d is None:
-          continue
+        if include_test:
+            for pid in test_ids.get(level_key, []):
+                d = data_by_id.get(pid)
+                if d is None:
+                    continue
 
-        solved_moves = solve_from_sample(d)
+                solved_moves = solve_from_sample(d)
 
-        # print(f"Level {level} - Solved test puzzle ID: {d["id"]} Moves: {len(solved_moves)} (Min: {d["min_num_moves"]})")
+                # print(f"Level {level} - Solved test puzzle ID: {d["id"]} Moves: {len(solved_moves)} (Min: {d["min_num_moves"]})")
 
-        test_dataset.append(
-          RushHourSample(
-            id=d["id"],
-            board=d["board"],
-            exit=d["exit"],
-            min_num_moves=d["min_num_moves"],
-            solution_moves=solved_moves,
-          )
-        )
+                test_dataset.append(
+                    RushHourSample(
+                        id=d["id"],
+                        board=d["board"],
+                        exit=d["exit"],
+                        min_num_moves=d["min_num_moves"],
+                        solution_moves=solved_moves,
+                    )
+                )
 
     return train_dataset, test_dataset
 
@@ -13654,7 +13656,7 @@ def sft(
     tokenizer.save_pretrained(output_dir)
 
 if __name__ == "__main__":
-    train_puzzles, test_puzzles = create_dataset()
+    train_puzzles, _ = create_dataset(True, False)
     # print(train_puzzles[:5])
     
     raw_data = [{"text": format_sample(puzzle)} for puzzle in train_puzzles]
