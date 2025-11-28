@@ -7,6 +7,8 @@ from puzzle import CarNotFound, InvalidMove, RushHourPuzzle
 from sft import create_dataset, build_prompt
 from collections import defaultdict, Counter
 import matplotlib.pyplot as plt
+import os
+from datetime import datetime
 
 def board_to_str(board: list[list[str]]) -> str:
     return "\n".join("".join(row) for row in board)
@@ -129,14 +131,11 @@ def model_evaluate():
 def aggregate(results):
     by_level = defaultdict(list)
     label_counts = Counter()
-
     total_time = 0.0
     sample_count = 0
 
     for r in results:
-        if r["label"] != "PARSE_ERROR":
-            total_time += r["time"]
-            not_parse_err_count += 1
+        total_time += r.get("time", 0.0)
         if r["level"] is not None:
             by_level[r["level"]].append(r["valid"])
         label_counts[r["label"]] += 1
@@ -144,9 +143,10 @@ def aggregate(results):
         sample_count += 1
 
     levels = sorted(by_level.keys())
-    success = [sum(v) / len(v) for v in (by_level[l] for l in levels)]
+    success = [sum(v) / len(v) for v in (by_level[l] for l in levels)] if levels else []
 
-    print(f"Average inference time: {total_time / sample_count:.3f} seconds")
+    avg_time = total_time / sample_count if sample_count > 0 else 0.0
+    print(f"Average inference time: {avg_time:.3f} seconds over {sample_count} samples")
 
     return levels, success, label_counts
 
@@ -165,6 +165,9 @@ if __name__ == "__main__":
     plt.xlabel("Level")
     plt.ylabel("Success Rate")
     plt.title("Qwen2.5 (0SP) - Success Rate by Level")
+    fname1 = f"success_rate_by_level_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+    plt.savefig(fname1, bbox_inches='tight')
+    print(f"Saved plot: {os.path.abspath(fname1)}")
     plt.show()
 
     # Label dist.
@@ -176,4 +179,7 @@ if __name__ == "__main__":
     plt.ylabel("Count")
     plt.title("Qwen2.5 (0SP) - Label Distribution")
     plt.tight_layout()
+    fname2 = f"label_distribution_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+    plt.savefig(fname2, bbox_inches='tight')
+    print(f"Saved plot: {os.path.abspath(fname2)}")
     plt.show()
