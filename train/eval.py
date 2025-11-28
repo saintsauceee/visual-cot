@@ -159,32 +159,30 @@ if __name__ == "__main__":
 
     _, test_puzzles = create_dataset(False, True)
 
-    # results = model_evaluate()
-    # levels, success, label_counts = aggregate(results)
+    results = model_evaluate()
+    levels, success, label_counts = aggregate(results)
 
-    # # SR per level
-    # plt.figure()
-    # plt.bar(levels, success)
-    # plt.xlabel("Level")
-    # plt.ylabel("Success Rate")
-    # plt.title(f"{model_name_str} (0SP) - Success Rate by Level")
-    # fname1 = f"success_rate_by_level_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
-    # plt.savefig(fname1, bbox_inches='tight')
-    # print(f"Saved plot: {os.path.abspath(fname1)}")
-    # plt.show()
+    # SR per level
+    plt.figure()
+    plt.bar(levels, success)
+    plt.xlabel("Level")
+    plt.ylabel("Success Rate")
+    plt.title(f"{model_name_str} (0SP) - Success Rate by Level")
+    fname1 = f"success_rate_by_level_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+    plt.savefig(fname1, bbox_inches='tight')
+    print(f"Saved plot: {os.path.abspath(fname1)}")
+    plt.show()
 
-    # # Label dist.
-    # plt.figure()    
-    # labels = list(label_counts.keys())
-    # counts = [label_counts[l] for l in labels]
-    # plt.bar(range(len(labels)), counts)
-    # plt.xticks(range(len(labels)), labels, rotation=45, ha="right")
-    # plt.ylabel("Count")
-    # plt.title(f"{model_name_str} (0SP) - Label Distribution")
-    # plt.tight_layout()
-    # fname2 = f"label_distribution_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
-    # plt.savefig(fname2, bbox_inches='tight')
-    # print(f"Saved plot: {os.path.abspath(fname2)}")
-    # plt.show()
-
-    evaluate_sample(5, True)
+    # Label dist.
+    plt.figure()    
+    labels = list(label_counts.keys())
+    counts = [label_counts[l] for l in labels]
+    plt.bar(range(len(labels)), counts)
+    plt.xticks(range(len(labels)), labels, rotation=45, ha="right")
+    plt.ylabel("Count")
+    plt.title(f"{model_name_str} (0SP) - Label Distribution")
+    plt.tight_layout()
+    fname2 = f"label_distribution_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+    plt.savefig(fname2, bbox_inches='tight')
+    print(f"Saved plot: {os.path.abspath(fname2)}")
+    plt.show()
