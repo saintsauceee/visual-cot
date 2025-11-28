@@ -18,9 +18,11 @@ output_example = [
     {"name": "R", "direction": "right", "distance": 4},
 ]
 
+sample = test_puzzles[0]
+
 prompt_example = build_prompt(
-    board_to_str(train_puzzles[0].board), 
-    train_puzzles[0].exit, 
+    board_to_str(sample.board), 
+    sample.exit, 
     output_example
 ) + '\nSolution:\n'
 
@@ -54,4 +56,4 @@ print(gen_text)
 print("\n\n")
 
 print("Ground-truth Solution:\n")
-print(test_puzzles[0].solution_moves)
+print(sample.solution_moves)
