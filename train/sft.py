@@ -13671,7 +13671,7 @@ if __name__ == "__main__":
         
         weight_decay=0.0,
         bf16=True,                          # A100 supports bf16
-        logging_steps=10,
+        
         group_by_length=True,
         push_to_hub=True,
         hub_model_id="saintsauce/qwen3-rushhour-sft"
