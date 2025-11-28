@@ -100,6 +100,7 @@ def evaluate_sample(idx: int, verbose: bool = False):
 
     try:
         gen_moves = ast.literal_eval(gen_text)
+        print(f"Parsed generated moves for puzzle {sample.id}: {gen_moves}")
     except Exception as e:
         if verbose:
             print(f"failed to parse generated solution: {e}")
