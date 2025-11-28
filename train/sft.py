@@ -13582,7 +13582,7 @@ output_example = [
     {"name": "R", "direction": "right", "distance": 4},
 ]
 
-def build_prompt(board: str, exit: str | tuple[int, int], output_example: list[dict[str, str | int]]) -> str:
+def build_prompt(board: str, exit: str | tuple[int, int], output_example: list[dict[str, str | int]] = output_example) -> str:
     """ Build prompt for SFT sample """
     
     board_str = board
