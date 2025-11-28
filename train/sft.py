@@ -13626,7 +13626,7 @@ def sft(
 ) -> None:
     """ SFT Pipeline """
     
-    tokenizer, model = load_model_from_hf()
+    tokenizer, model = load_model_from_hf(model_name="Qwen/Qwen2.5-7B-Instruct")
 
     data = Dataset.from_list(raw_data)
 
@@ -13663,7 +13663,7 @@ if __name__ == "__main__":
         output_dir="sft_out",
 
         num_train_epochs=8,
-        learning_rate=1e-4,
+        learning_rate=2e-4,
         warmup_ratio = 0.03,
         lr_scheduler_type = "cosine",
         per_device_train_batch_size=4,      # fits 4-bit + LoRA
@@ -13671,14 +13671,14 @@ if __name__ == "__main__":
         
         weight_decay=0.0,
         bf16=True,                          # A100 supports bf16
-        
+
         group_by_length=True,
         push_to_hub=True,
-        hub_model_id="saintsauce/qwen3-rushhour-sft"
+        hub_model_id="saintsauce/Qwen2.5-7B-RushHour-SFT"
     )
     
     sft(
-        "Qwen/Qwen3-8B", 
+        "Qwen/Qwen2.5-7B-Instruct",
         raw_data=raw_data,
         train_args=args
     )
