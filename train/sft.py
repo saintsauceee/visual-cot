@@ -1,12 +1,15 @@
 import copy
 from datasets import Dataset
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+import torch
 from transformers import Trainer, TrainingArguments, DataCollatorForLanguageModeling
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from puzzle import RushHourPuzzle
 from rh import RushHourSample
 from typing import List, Optional
 from solver import solve_puzzle
+
+BASE = "Qwen/Qwen2.5-7B-Instruct"
 
 data: list[dict[str, int | tuple[int, int] | list[list[str]]]] = [
   {
