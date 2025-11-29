@@ -5,52 +5,15 @@ import torch
 import rh_data
 import argparse
 from tqdm import tqdm
-from copy import deepcopy
-from rh import RushHourSample
 from datetime import datetime
-from train import build_prompt
+from train.sft import build_prompt
 import matplotlib.pyplot as plt
 from collections import defaultdict, Counter
 from hf import load_instruct_base, load_with_adapter
-from puzzle import CarNotFound, InvalidMove, RushHourPuzzle
+from puzzle import validate_solution, RushHourSample
 
 def board_to_str(board: list[list[str]]) -> str:
     return "\n".join("".join(row) for row in board)
-
-def validate_solution(puzzle, moves, check_optimal=False):
-    sim = RushHourPuzzle(
-        id=puzzle.id,
-        exit=puzzle.exit,
-        min_num_moves=puzzle.min_num_moves,
-        board=deepcopy(puzzle.board),
-    )
-
-    for i, m in enumerate(moves, 1):
-        if not isinstance(m, dict):
-            print(f"move {i} is not a dict: {m}")
-            return False, "TYPE_ERROR"
-        if not all(k in m for k in ("name", "direction", "distance")):
-            print(f"move {i} is missing keys: {m}")
-            return False, "MISSING_KEYS"
-        try:
-            sim.move(m["name"], m["direction"], int(m["distance"]))
-        except CarNotFound as e:
-            print(f"move {i} car not found: {e}")
-            return False, "CAR_NOT_FOUND"
-        except InvalidMove as e:
-            print(f"move {i} invalid: {e}")
-            return False, "INVALID_MOVE"
-        except Exception as e:
-            print(f"move {i} unknown error: {e}")
-            return False, "UNKNOWN_ERROR"
-
-    if not sim.solved():
-        return False, "UNSOLVED"
-
-    if check_optimal and len(moves) != puzzle.min_num_moves:
-        return True, "NOT_OPTIMAL"
-
-    return True, "OPTIMAL"
 
 def evaluate_sample(
     sample,

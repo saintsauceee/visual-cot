@@ -1,5 +1,3 @@
-import argparse
-import ast
 import torch
 from datasets import Dataset
 from peft import LoraConfig, get_peft_model
@@ -9,8 +7,7 @@ from transformers import (
 )
 
 import rh_data
-from rh import RushHourSample
-from training.eval import validate_solution
+from puzzle import RushHourSample
 
 # Sample data format:
 # {
@@ -43,27 +40,6 @@ from training.eval import validate_solution
 # ]
 
 BASE = "Qwen/Qwen2.5-7B-Instruct"
-
-sample_puzzle = RushHourSample(
-    id=1,
-    board=[
-        ['B','B','C','C','C','.'], 
-        ['.','.','.','G','.','.'], 
-        ['R','R','.','G','.','.'], 
-        ['.','F','D','D','D','.'], 
-        ['.','F','.','.','.','.'], 
-        ['E','E','E','.','.','.']
-    ],
-    exit='[3, 6]',
-    min_num_moves=5,
-    solution_moves=[
-        {'name': 'E', 'direction': 'right', 'distance': 2}, 
-        {'name': 'F', 'direction': 'down', 'distance': 1}, 
-        {'name': 'D', 'direction': 'left', 'distance': 2}, 
-        {'name': 'G', 'direction': 'down', 'distance': 2}, 
-        {'name': 'R', 'direction': 'right', 'distance': 4}
-    ]
-)
 
 output_example = [
     {"name": "B", "direction": "left", "distance": 1},
@@ -189,47 +165,36 @@ def sft(
     tokenizer.push_to_hub("saintsauce/Qwen2.5-7B-RushHour-SFT")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument(
-        "--mode",
-        choices=["sft", "rl"],
-        default="sft"
-    )
-
-    args = parser.parse_args()
-
     _, train_puzzles, _ = rh_data.create_dataset(
         include_fsp=False,
         include_train=True,
         include_test=False,
     )
      
-    raw_data = [{"text": format_sample(puzzle)} for puzzle in train_puzzles]
+    raw_data = [
+        {"text": format_sample(puzzle)} 
+        for puzzle in train_puzzles
+    ]
 
-    if args.mode == "sft":
-        args = TrainingArguments(
-            output_dir="sft_out",
+    args = TrainingArguments(
+        output_dir="sft_out",
 
-            num_train_epochs=8,
-            learning_rate=5e-5,
-            warmup_ratio = 0.03,
-            lr_scheduler_type = "cosine",
-            per_device_train_batch_size=4,      # fits 4-bit + LoRA
-            gradient_checkpointing=False,        # saves VRAM
-            
-            weight_decay=0.0,
-            bf16=True,                          # A100 supports bf16
-
-            group_by_length=False,
-            push_to_hub=False,
-        )
+        num_train_epochs=8,
+        learning_rate=5e-5,
+        warmup_ratio = 0.03,
+        lr_scheduler_type = "cosine",
+        per_device_train_batch_size=4,      # fits 4-bit + LoRA
+        gradient_checkpointing=False,        # saves VRAM
         
-        sft(
-            BASE,
-            raw_data=raw_data,
-            train_args=args
-        )
+        weight_decay=0.0,
+        bf16=True,                          # A100 supports bf16
+
+        group_by_length=False,
+        push_to_hub=False,
+    )
     
-    elif args.mode == "rl":
-        pass
+    sft(
+        BASE,
+        raw_data=raw_data,
+        train_args=args
+    )
