@@ -159,7 +159,11 @@ def model_evaluate(
             if puzzle_level != level:
                 continue
             
-            valid, label, infer_time = evaluate_sample(puzzle, verbose=False, few_shot_examples=curr_level_examples)
+            valid, label, infer_time = evaluate_sample(
+                puzzle, 
+                verbose=False, 
+                few_shot_examples=curr_level_examples
+            )
 
             results.append({
                 "idx": idx,
@@ -220,32 +224,34 @@ if __name__ == "__main__":
             print(f"\n{'=' * 80}")
             print(f"SAMPLE MODE - Puzzle Index: {sample_idx}")
             print(f"{'=' * 80}\n")
+
+            fsp_formatted = [(board_to_str(puzzle.board), puzzle.solution_moves) for puzzle in fsp_puzzles[0:3]]
             
             prompt = build_prompt(
                 board_to_str(puzzle.board), 
                 puzzle.exit,
-                few_shot_examples=None
+                few_shot_examples=fsp_formatted
             )
             
             print(f"\n{"=" * 80}")
             print("PROMPT (Zero-shot):")
             print(f"{"=" * 80}\n")
             print(prompt)
-            print("\n")
             
             valid, label, infer_time = evaluate_sample(
                 puzzle, 
                 verbose=False, 
-                few_shot_examples=None
+                few_shot_examples=fsp_formatted,
+                print_output=True
             )
             
             print(f"\n{"=" * 80}")
             print("GROUND TRUTH SOLUTION:")
             print(f"{"=" * 80}\n")
             print(puzzle.solution_moves)
+
             print(f"\nValidation Result: {label}")
             print(f"Inference time: {infer_time:.3f} seconds")
-            print("=" * 80)
         else:
             print(f"Error: Sample index {sample_idx} out of range (test set has {len(test_puzzles)} puzzles)")
     else:
