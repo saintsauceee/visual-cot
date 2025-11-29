@@ -4,7 +4,7 @@ from transformers import (
     AutoModelForCausalLM,
     BitsAndBytesConfig,
 )
-from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training, PeftModel
+from peft import PeftModel
 
 BASE = "Qwen/Qwen2.5-7B-Instruct"
 
