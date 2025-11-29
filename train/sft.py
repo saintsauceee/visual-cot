@@ -1,5 +1,6 @@
 import copy
 from datasets import Dataset
+from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from transformers import Trainer, TrainingArguments, DataCollatorForLanguageModeling
 from hf import load_instruct_base
 from puzzle import RushHourPuzzle
@@ -13772,7 +13773,21 @@ def sft(
 ) -> None:
     """ SFT Pipeline """
     
-    tokenizer, model = load_instruct_base()
+    tokenizer, base_model = load_instruct_base()
+
+    base_model = prepare_model_for_kbit_training(base_model)
+
+    lora_config = LoraConfig(
+        r=16,
+        lora_alpha=32,
+        lora_dropout=0.05,
+        target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],  # Qwen attention proj layers
+        bias="none",
+        task_type="CAUSAL_LM",
+    )
+
+    model = get_peft_model(base_model, lora_config)
+    model.print_trainable_parameters()
 
     data = Dataset.from_list(raw_data)
 
@@ -13794,10 +13809,11 @@ def sft(
     )
     trainer.train()
 
-    trainer.push_to_hub("SFT rush hour v1")
-
     model.save_pretrained(output_dir)
     tokenizer.save_pretrained(output_dir)
+
+    model.push_to_hub("saintsauce/Qwen2.5-7B-RushHour-SFT")
+    tokenizer.push_to_hub("saintsauce/Qwen2.5-7B-RushHour-SFT")
 
 if __name__ == "__main__":
     _, train_puzzles, _ = create_dataset(
@@ -13822,8 +13838,7 @@ if __name__ == "__main__":
         bf16=True,                          # A100 supports bf16
 
         group_by_length=True,
-        push_to_hub=True,
-        hub_model_id="saintsauce/Qwen2.5-7B-RushHour-SFT"
+        push_to_hub=False,
     )
     
     sft(
