@@ -13839,8 +13839,8 @@ if __name__ == "__main__":
     args = TrainingArguments(
         output_dir="sft_out",
 
-        num_train_epochs=20,
-        learning_rate=2e-4,
+        num_train_epochs=8,
+        learning_rate=5e-5,
         warmup_ratio = 0.03,
         lr_scheduler_type = "cosine",
         per_device_train_batch_size=4,      # fits 4-bit + LoRA
@@ -13849,7 +13849,7 @@ if __name__ == "__main__":
         weight_decay=0.0,
         bf16=True,                          # A100 supports bf16
 
-        group_by_length=True,
+        group_by_length=False,
         push_to_hub=False,
     )
     
