@@ -13786,6 +13786,7 @@ def sft(
         torch_dtype=torch.bfloat16,
         device_map="auto",
     )
+    base_model.config.use_cache = False
 
     # 2. Attach LoRA adapters
     lora_config = LoraConfig(
@@ -13843,7 +13844,7 @@ if __name__ == "__main__":
         warmup_ratio = 0.03,
         lr_scheduler_type = "cosine",
         per_device_train_batch_size=4,      # fits 4-bit + LoRA
-        gradient_checkpointing=True,        # saves VRAM
+        gradient_checkpointing=False,        # saves VRAM
         
         weight_decay=0.0,
         bf16=True,                          # A100 supports bf16
