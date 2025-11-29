@@ -7,6 +7,8 @@ from transformers import (
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 
 def load_model_from_hf(model_name: str):
+    print(f"Loading model and tokenizer from HuggingFace: {model_name}")
+
     tokenizer = AutoTokenizer.from_pretrained(model_name, use_fast=True)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token

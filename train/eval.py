@@ -54,7 +54,8 @@ def validate_solution(puzzle, moves, check_optimal=False):
 def evaluate_sample(
     sample,
     verbose: bool = False, 
-    few_shot_examples: list[tuple[str, list[dict[str, str | int]]]] | None = None
+    few_shot_examples: list[tuple[str, list[dict[str, str | int]]]] | None = None,
+    print_output: bool = False,
 ):
     prompt_example = build_prompt(
         board_to_str(sample.board), 
@@ -87,6 +88,15 @@ def evaluate_sample(
 
     gen_ids = generated[0][inputs["input_ids"].shape[1]:]
     gen_text = tokenizer.decode(gen_ids, skip_special_tokens=True).strip()
+
+    if print_output:
+        print(f"{80 * '='}")
+        print("GENERATED OUTPUT:")
+        print(f"{80 * '='}")
+
+        print("\nGenerated Text:\n")
+        print(gen_text)
+        print("\n")
 
     infer_time = end - start
 
@@ -207,9 +217,9 @@ if __name__ == "__main__":
         sample_idx = 5
         if sample_idx < len(test_puzzles):
             puzzle = test_puzzles[sample_idx]
-            print(f"\n{'='*80}")
+            print(f"\n{'=' * 80}")
             print(f"SAMPLE MODE - Puzzle Index: {sample_idx}")
-            print(f"{'='*80}\n")
+            print(f"{'=' * 80}\n")
             
             prompt = build_prompt(
                 board_to_str(puzzle.board), 
@@ -217,9 +227,9 @@ if __name__ == "__main__":
                 few_shot_examples=None
             )
             
-            print("=" * 80)
+            print(f"\n{"=" * 80}")
             print("PROMPT (Zero-shot):")
-            print("=" * 80 + "\n")
+            print(f"{"=" * 80}\n")
             print(prompt)
             print("\n")
             
@@ -229,9 +239,9 @@ if __name__ == "__main__":
                 few_shot_examples=None
             )
             
-            print("=" * 80)
+            print(f"\n{"=" * 80}")
             print("GROUND TRUTH SOLUTION:")
-            print("=" * 80)
+            print(f"{"=" * 80}\n")
             print(puzzle.solution_moves)
             print(f"\nValidation Result: {label}")
             print(f"Inference time: {infer_time:.3f} seconds")
