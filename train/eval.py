@@ -3,7 +3,7 @@ import ast
 import time
 import torch
 from copy import deepcopy
-from hf import load_model_from_hf
+from hf import load_instruct_base, load_with_adapter
 from puzzle import CarNotFound, InvalidMove, RushHourPuzzle
 from sft import create_dataset, build_prompt
 from collections import defaultdict, Counter
@@ -211,31 +211,27 @@ if __name__ == "__main__":
         default="sft",
         help="Model type to evaluate: 'instruct', 'sft' or 'rl'",
     )
-    parser.add_argument(
-        "--model-name",
-        type=str,
-        default=None,
-        help="Optional: full HuggingFace model id to override the chosen --model",
-    )
+    
     args = parser.parse_args()
 
     if args.shots not in [-1, 0, 3]:
         raise ValueError("--shots must be -1, 0 or 3")
 
     # Select model id based on the chosen model type or explicit override
-    if args.model_name:
-        model_name_str = args.model_name
+    if args.model == "instruct":
+        model_name_str = "Qwen/Qwen2.5-7B-Instruct"
+    elif args.model == "sft":
+        model_name_str = "saintsauce/Qwen2.5-7B-RushHour-SFT"
+    elif args.model == "rl":
+        model_name_str = "saintsauce/Qwen2.5-7B-RushHour-RL"
     else:
-        if args.model == "instruct":
-            model_name_str = "Qwen/Qwen2.5-3B-Instruct"
-        elif args.model == "sft":
-            model_name_str = "saintsauce/Qwen2.5-7B-RushHour-SFT"
-        elif args.model == "rl":
-            model_name_str = "saintsauce/Qwen2.5-7B-RushHour-RL"
-        else:
-            raise ValueError(f"Unknown model type: {args.model}")
+        raise ValueError(f"Unknown model type: {args.model}")
     
-    tokenizer, model = load_model_from_hf(model_name=model_name_str)
+    if args.model == "instruct":
+        tokenizer, model = load_instruct_base()
+    elif args.model == "sft" or args.model == "rl":
+        tokenizer, model = load_with_adapter(model_name_str)
+        
     model.eval()
 
     fsp_puzzles, _, test_puzzles = create_dataset(True, False, True)
@@ -297,15 +293,21 @@ if __name__ == "__main__":
         
         levels, success, label_counts = aggregate(results)
 
-        # SR per level
+        # Success rate per level (styled like label distribution plot)
         plt.figure()
-        plt.bar(levels, success)
+
+        success_map = dict(zip(levels, success)) if levels else {}
+        full_levels = list(range(3, 21))
+        success_for_all_levels = [success_map.get(l, 0.0) for l in full_levels]
+
+        plt.bar(full_levels, success_for_all_levels)
         plt.xlabel("Puzzle Level (Minimum Moves)")
         plt.ylabel("Average Success Rate")
         shot_str = f"{args.shots}-shot"
         plt.title(f"Average Success Rate by Puzzle Level - {model_name_str} ({shot_str})")
         plt.ylim(0, 1)
-        plt.xticks(range(3, 21))
+        plt.xticks(full_levels)
+        plt.tight_layout()
         fname1 = f"success_rate_by_level_{shot_str}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
         plt.savefig(fname1, bbox_inches='tight')
         print(f"Saved plot: {os.path.abspath(fname1)}")

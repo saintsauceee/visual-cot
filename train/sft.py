@@ -1,7 +1,7 @@
 import copy
 from datasets import Dataset
 from transformers import Trainer, TrainingArguments, DataCollatorForLanguageModeling
-from hf import load_model_from_hf
+from hf import load_instruct_base
 from puzzle import RushHourPuzzle
 from rh import RushHourSample
 from typing import List, Optional
@@ -13772,7 +13772,7 @@ def sft(
 ) -> None:
     """ SFT Pipeline """
     
-    tokenizer, model = load_model_from_hf(model_name=model_name)
+    tokenizer, model = load_instruct_base()
 
     data = Dataset.from_list(raw_data)
 
@@ -13805,36 +13805,29 @@ if __name__ == "__main__":
         include_train=True,
         include_test=False,
     )
-
-    # fsp_formatted = [(board_to_str(puzzle.board), puzzle.solution_moves) for puzzle in fsp_puzzles[0:3]]
-    # print(build_prompt(
-    #     board=board_to_str(train_puzzles[0].board),
-    #     exit=train_puzzles[0].exit,
-    #     few_shot_examples=fsp_formatted
-    # ))
      
-    # raw_data = [{"text": format_sample(puzzle)} for puzzle in train_puzzles]
+    raw_data = [{"text": format_sample(puzzle)} for puzzle in train_puzzles]
 
-    # args = TrainingArguments(
-    #     output_dir="sft_out",
+    args = TrainingArguments(
+        output_dir="sft_out",
 
-    #     num_train_epochs=8,
-    #     learning_rate=2e-4,
-    #     warmup_ratio = 0.03,
-    #     lr_scheduler_type = "cosine",
-    #     per_device_train_batch_size=4,      # fits 4-bit + LoRA
-    #     gradient_checkpointing=True,        # saves VRAM
+        num_train_epochs=20,
+        learning_rate=2e-4,
+        warmup_ratio = 0.03,
+        lr_scheduler_type = "cosine",
+        per_device_train_batch_size=4,      # fits 4-bit + LoRA
+        gradient_checkpointing=True,        # saves VRAM
         
-    #     weight_decay=0.0,
-    #     bf16=True,                          # A100 supports bf16
+        weight_decay=0.0,
+        bf16=True,                          # A100 supports bf16
 
-    #     group_by_length=True,
-    #     push_to_hub=True,
-    #     hub_model_id="saintsauce/Qwen2.5-7B-RushHour-SFT"
-    # )
+        group_by_length=True,
+        push_to_hub=True,
+        hub_model_id="saintsauce/Qwen2.5-7B-RushHour-SFT"
+    )
     
-    # sft(
-    #     "Qwen/Qwen2.5-7B-Instruct",
-    #     raw_data=raw_data,
-    #     train_args=args
-    # )
+    sft(
+        "Qwen/Qwen2.5-7B-Instruct",
+        raw_data=raw_data,
+        train_args=args
+    )
