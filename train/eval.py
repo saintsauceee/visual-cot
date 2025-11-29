@@ -219,11 +219,15 @@ if __name__ == "__main__":
             
             print("=" * 80)
             print("PROMPT (Zero-shot):")
-            print("=" * 80)
+            print("=" * 80 + "\n")
             print(prompt)
             print("\n")
             
-            valid, label, infer_time = evaluate_sample(puzzle, verbose=True, few_shot_examples=None)
+            valid, label, infer_time = evaluate_sample(
+                puzzle, 
+                verbose=False, 
+                few_shot_examples=None
+            )
             
             print("=" * 80)
             print("GROUND TRUTH SOLUTION:")
