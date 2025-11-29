@@ -13730,8 +13730,6 @@ def build_prompt(
         "- Cars cannot move outside the board.\n"
         "- Cars cannot pass through or overlap other cars.\n"
         "- Each move must be legal under these rules.\n\n"
-        "This is the board:\n"
-        f"{board_str}\n\n"
         "Your output must be a Python list of moves.\n"
         "Each move is a dict with keys 'name', 'direction', 'distance'.\n"
         "Here is an example of the correct format:\n"
@@ -13746,6 +13744,11 @@ def build_prompt(
             prompt += f"{board}\n"
             prompt += "\nSolution:\n"
             prompt += f"{repr(sln)}\n"
+    
+    prompt += (
+        "\nNow, solve the following board:\n"
+        f"{board_str}\n"
+    )
             
     return prompt
 
