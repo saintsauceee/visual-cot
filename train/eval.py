@@ -61,7 +61,7 @@ def evaluate_sample(
         board_to_str(sample.board), 
         sample.exit,
         few_shot_examples=few_shot_examples
-    ) + '\nSolution:\n'
+    ) + '\nSolution:'
 
     if verbose:
         print("\n")
@@ -230,7 +230,18 @@ if __name__ == "__main__":
                 board_to_str(puzzle.board), 
                 puzzle.exit,
                 few_shot_examples=fsp_formatted
-            ) + '\nSolution:\n'
+            ) + '\nSolution:'
+            
+            print(f"\n{"=" * 80}")
+            print("PROMPT (Zero-shot):")
+            print(f"{"=" * 80}\n")
+            print(prompt)
+            
+            valid, label, infer_time = evaluate_sample(
+                puzzle, 
+                verbose=False,
+                print_output=True
+            )
             
             print(f"\n{"=" * 80}")
             print("PROMPT (Few-shot):")
