@@ -159,7 +159,11 @@ def model_evaluate(
             if puzzle_level != level:
                 continue
             
-            valid, label, infer_time = evaluate_sample(puzzle, verbose=False, few_shot_examples=curr_level_examples)
+            valid, label, infer_time = evaluate_sample(
+                puzzle, 
+                verbose=False, 
+                few_shot_examples=curr_level_examples
+            )
 
             results.append({
                 "idx": idx,
@@ -237,7 +241,8 @@ if __name__ == "__main__":
             valid, label, infer_time = evaluate_sample(
                 puzzle, 
                 verbose=False, 
-                few_shot_examples=fsp_formatted
+                few_shot_examples=fsp_formatted,
+                print_output=True
             )
             
             print(f"\n{"=" * 80}")
