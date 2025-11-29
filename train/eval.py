@@ -11,8 +11,7 @@ import matplotlib.pyplot as plt
 import os
 from tqdm import tqdm
 from datetime import datetime
-
-from train.rh import RushHourSample
+from rh import RushHourSample
 
 def board_to_str(board: list[list[str]]) -> str:
     return "\n".join("".join(row) for row in board)
