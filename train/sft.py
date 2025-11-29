@@ -2,7 +2,7 @@ import copy
 from datasets import Dataset
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from transformers import Trainer, TrainingArguments, DataCollatorForLanguageModeling
-from hf import load_instruct_base
+from transformers import AutoTokenizer, AutoModelForCausalLM
 from puzzle import RushHourPuzzle
 from rh import RushHourSample
 from typing import List, Optional
