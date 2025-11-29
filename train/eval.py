@@ -1,3 +1,4 @@
+import argparse
 import ast
 import time
 import torch
@@ -10,6 +11,8 @@ import matplotlib.pyplot as plt
 import os
 from tqdm import tqdm
 from datetime import datetime
+
+from train.rh import RushHourSample
 
 def board_to_str(board: list[list[str]]) -> str:
     return "\n".join("".join(row) for row in board)
@@ -49,12 +52,15 @@ def validate_solution(puzzle, moves, check_optimal=False):
 
     return True, "OPTIMAL"
 
-def evaluate_sample(idx: int, verbose: bool = False):
-    sample = test_puzzles[idx]
-
+def evaluate_sample(
+    sample,
+    verbose: bool = False, 
+    few_shot_examples: list[tuple[str, list[dict[str, str | int]]]] | None = None
+):
     prompt_example = build_prompt(
         board_to_str(sample.board), 
-        sample.exit
+        sample.exit,
+        few_shot_examples=few_shot_examples
     ) + '\nSolution:\n'
 
     if verbose:
@@ -116,18 +122,44 @@ def evaluate_sample(idx: int, verbose: bool = False):
     
     return valid, label, infer_time
 
-def model_evaluate():
+def model_evaluate(
+    include_fsp: bool,
+    fsp_puzzles: list[RushHourSample],
+    test_puzzles: list[RushHourSample]
+):
     results = []
-    for idx, puzzle in enumerate(tqdm(test_puzzles, desc="Evaluating", unit="puzzle"), start=0):
-        valid, label, infer_time = evaluate_sample(idx, verbose=False)
-        level = getattr(puzzle, "min_num_moves", None)
-        results.append({
-            "idx": idx,
-            "level": level,
-            "valid": valid,
-            "label": label,
-            "time": infer_time,
-        })
+
+    fsp_by_level = defaultdict(list)
+    if include_fsp:
+        for puzzle in fsp_puzzles:
+            level = getattr(puzzle, "min_num_moves", None)
+            if level is not None:
+                fsp_by_level[level].append((board_to_str(puzzle.board), puzzle.solution_moves))
+
+    for level in range(3, 21):
+        if include_fsp:
+            curr_level_examples = fsp_by_level.get(level, None)
+            if not curr_level_examples:
+                print(f"No few-shot examples found for level {level}, using zero-shot for this level.")
+                curr_level_examples = None
+        else:
+            curr_level_examples = None
+
+        for idx, puzzle in enumerate(tqdm(test_puzzles, desc=f"Evaluating Level {level}", unit="puzzle"), start=0):
+            puzzle_level = getattr(puzzle, "min_num_moves", None)
+            if puzzle_level != level:
+                continue
+            
+            valid, label, infer_time = evaluate_sample(puzzle, verbose=False, few_shot_examples=curr_level_examples)
+
+            results.append({
+                "idx": idx,
+                "level": puzzle_level,
+                "valid": valid,
+                "label": label,
+                "time": infer_time,
+            })
+
     return results
 
 def aggregate(results):
@@ -153,36 +185,89 @@ def aggregate(results):
     return levels, success, label_counts
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "--shots",
+        type=int,
+        default=3,
+        help="Number of few-shot examples to include in the prompt (0 or 3) or -1 for sample",
+    )
+    args = parser.parse_args()
+
+    if args.shots not in [-1, 0, 3]:
+        raise ValueError("--shots must be -1, 0 or 3")
+
     model_name_str = "saintsauce/Qwen2.5-7B-RushHour-SFT"
     tokenizer, model = load_model_from_hf(model_name=model_name_str)
     model.eval()
 
-    _, test_puzzles = create_dataset(False, True)
+    fsp_puzzles, _, test_puzzles = create_dataset(True, False, True)
 
-    results = model_evaluate()
-    levels, success, label_counts = aggregate(results)
+    if args.shots == -1:
+        sample_idx = 5
+        if sample_idx < len(test_puzzles):
+            puzzle = test_puzzles[sample_idx]
+            print(f"\n{'='*80}")
+            print(f"SAMPLE MODE - Puzzle Index: {sample_idx}")
+            print(f"{'='*80}\n")
+            
+            prompt = build_prompt(
+                board_to_str(puzzle.board), 
+                puzzle.exit,
+                few_shot_examples=None
+            )
+            
+            print("=" * 80)
+            print("PROMPT (Zero-shot):")
+            print("=" * 80)
+            print(prompt)
+            print("\n")
+            
+            valid, label, infer_time = evaluate_sample(puzzle, verbose=True, few_shot_examples=None)
+            
+            print("=" * 80)
+            print("GROUND TRUTH SOLUTION:")
+            print("=" * 80)
+            print(puzzle.solution_moves)
+            print(f"\nValidation Result: {label}")
+            print(f"Inference time: {infer_time:.3f} seconds")
+            print("=" * 80)
+        else:
+            print(f"Error: Sample index {sample_idx} out of range (test set has {len(test_puzzles)} puzzles)")
+    else:
+        results = model_evaluate(
+            include_fsp=True if args.shots > 0 else False,
+            fsp_puzzles=fsp_puzzles,
+            test_puzzles=test_puzzles
+        )
+        
+        levels, success, label_counts = aggregate(results)
 
-    # SR per level
-    plt.figure()
-    plt.bar(levels, success)
-    plt.xlabel("Level")
-    plt.ylabel("Success Rate")
-    plt.title(f"{model_name_str} (0SP) - Success Rate by Level")
-    fname1 = f"success_rate_by_level_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
-    plt.savefig(fname1, bbox_inches='tight')
-    print(f"Saved plot: {os.path.abspath(fname1)}")
-    plt.show()
+        # SR per level
+        plt.figure()
+        plt.bar(levels, success)
+        plt.xlabel("Puzzle Level (Minimum Moves)")
+        plt.ylabel("Average Success Rate")
+        shot_str = f"{args.shots}-shot"
+        plt.title(f"Average Success Rate by Puzzle Level - {model_name_str} ({shot_str})")
+        plt.ylim(0, 1)
+        plt.xticks(range(3, 21))
+        fname1 = f"success_rate_by_level_{shot_str}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+        plt.savefig(fname1, bbox_inches='tight')
+        print(f"Saved plot: {os.path.abspath(fname1)}")
+        plt.show()
 
-    # Label dist.
-    plt.figure()    
-    labels = list(label_counts.keys())
-    counts = [label_counts[l] for l in labels]
-    plt.bar(range(len(labels)), counts)
-    plt.xticks(range(len(labels)), labels, rotation=45, ha="right")
-    plt.ylabel("Count")
-    plt.title(f"{model_name_str} (0SP) - Label Distribution")
-    plt.tight_layout()
-    fname2 = f"label_distribution_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
-    plt.savefig(fname2, bbox_inches='tight')
-    print(f"Saved plot: {os.path.abspath(fname2)}")
-    plt.show()
+        # Label distribution
+        plt.figure()    
+        labels = list(label_counts.keys())
+        counts = [label_counts[l] for l in labels]
+        plt.bar(range(len(labels)), counts)
+        plt.xticks(range(len(labels)), labels, rotation=45, ha="right")
+        plt.ylabel("Count")
+        plt.title(f"Label Distribution - {model_name_str} ({shot_str})")
+        plt.tight_layout()
+        fname2 = f"label_distribution_{shot_str}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+        plt.savefig(fname2, bbox_inches='tight')
+        print(f"Saved plot: {os.path.abspath(fname2)}")
+        plt.show()
