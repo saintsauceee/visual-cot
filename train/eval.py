@@ -90,13 +90,12 @@ def evaluate_sample(
     gen_text = tokenizer.decode(gen_ids, skip_special_tokens=True).strip()
 
     if print_output:
-        print(f"{80 * '='}")
+        print(f"\n{80 * '='}")
         print("GENERATED OUTPUT:")
         print(f"{80 * '='}")
 
-        print("\nGenerated Text:\n")
+        print("\nGenerated Text:")
         print(gen_text)
-        print("\n")
 
     infer_time = end - start
 
@@ -231,10 +230,10 @@ if __name__ == "__main__":
                 board_to_str(puzzle.board), 
                 puzzle.exit,
                 few_shot_examples=fsp_formatted
-            )
+            ) + '\nSolution:\n'
             
             print(f"\n{"=" * 80}")
-            print("PROMPT (Zero-shot):")
+            print("PROMPT (Few-shot):")
             print(f"{"=" * 80}\n")
             print(prompt)
             
