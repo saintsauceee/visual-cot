@@ -13773,15 +13773,23 @@ def sft(
 ) -> None:
     """ SFT Pipeline """
     
-    tokenizer, base_model = load_instruct_base()
+    tokenizer = AutoTokenizer.from_pretrained(BASE, use_fast=True)
+    if tokenizer.pad_token is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "right"
 
-    base_model = prepare_model_for_kbit_training(base_model)
+    base_model = AutoModelForCausalLM.from_pretrained(
+        BASE,
+        torch_dtype=torch.bfloat16,
+        device_map="auto",
+    )
 
+    # 2. Attach LoRA adapters
     lora_config = LoraConfig(
         r=16,
         lora_alpha=32,
         lora_dropout=0.05,
-        target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],  # Qwen attention proj layers
+        target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
         bias="none",
         task_type="CAUSAL_LM",
     )
