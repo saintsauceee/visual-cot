@@ -8,12 +8,9 @@ def board_for_prompt(board: list[list[str]]) -> str:
     return "\n".join("".join(row) for row in board)
 
 def board_key(puzzle: RushHourPuzzle):
-    """ Hashable representation of the board """
     return tuple(tuple(row) for row in puzzle.board)
 
 def generate_moves(puzzle: RushHourPuzzle):
-    """ Enumerate all legal moves from the current state """
-
     moves = []
     size = puzzle.size
     seen = set()
@@ -69,8 +66,6 @@ def generate_moves(puzzle: RushHourPuzzle):
     return moves
 
 def solve_puzzle(puzzle: RushHourPuzzle):
-    """ BFS returns shortest solution as list[{'name','direction','distance'}] or None """
-    
     start = RushHourPuzzle(
         id=puzzle.id,
         exit=puzzle.exit,

@@ -1,17 +1,18 @@
-import argparse
+import os
 import ast
 import time
 import torch
+import rh_data
+import argparse
+from tqdm import tqdm
 from copy import deepcopy
+from rh import RushHourSample
+from datetime import datetime
+from train import build_prompt
+import matplotlib.pyplot as plt
+from collections import defaultdict, Counter
 from hf import load_instruct_base, load_with_adapter
 from puzzle import CarNotFound, InvalidMove, RushHourPuzzle
-from sft import create_dataset, build_prompt
-from collections import defaultdict, Counter
-import matplotlib.pyplot as plt
-import os
-from tqdm import tqdm
-from datetime import datetime
-from rh import RushHourSample
 
 def board_to_str(board: list[list[str]]) -> str:
     return "\n".join("".join(row) for row in board)
@@ -217,10 +218,7 @@ if __name__ == "__main__":
     if args.shots not in [-1, 0, 3]:
         raise ValueError("--shots must be -1, 0 or 3")
 
-    # Select model id based on the chosen model type or explicit override
-    if args.model == "instruct":
-        model_name_str = "Qwen/Qwen2.5-7B-Instruct"
-    elif args.model == "sft":
+    if args.model == "sft":
         model_name_str = "saintsauce/Qwen2.5-7B-RushHour-SFT"
     elif args.model == "rl":
         model_name_str = "saintsauce/Qwen2.5-7B-RushHour-RL"
@@ -234,7 +232,7 @@ if __name__ == "__main__":
         
     model.eval()
 
-    fsp_puzzles, _, test_puzzles = create_dataset(True, False, True)
+    fsp_puzzles, _, test_puzzles = rh_data.create_dataset(True, False, True)
 
     if args.shots == -1:
         sample_idx = 5

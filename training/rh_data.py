@@ -1,8 +1,8 @@
 import copy
+from typing import Optional
+from puzzle import RushHourPuzzle
 from rh import RushHourSample
-from puzzle import RushHourPuzzle, InvalidMove, CarNotFound
 from solver import solve_puzzle
-from typing import List, Optional
 
 data: list[dict[str, int | tuple[int, int] | list[list[str]]]] = [
   {
@@ -13007,6 +13007,99 @@ data: list[dict[str, int | tuple[int, int] | list[list[str]]]] = [
   }
 ]
 
+fsp_ids: dict[str, list[int]] = {
+    "3": [
+        20,
+        26,
+        10
+    ],
+    "4": [
+        55,
+        54,
+        50
+    ],
+    "5": [
+        74,
+        63,
+        71
+    ],
+    "6": [
+        105,
+        93,
+        87
+    ],
+    "7": [
+        129,
+        126,
+        118
+    ],
+    "8": [
+        141,
+        131,
+        146
+    ],
+    "9": [
+        172,
+        170,
+        175
+    ],
+    "10": [
+        195,
+        187,
+        191
+    ],
+    "11": [
+        203,
+        208,
+        204
+    ],
+    "12": [
+        236,
+        238,
+        246
+    ],
+    "13": [
+        267,
+        266,
+        256
+    ],
+    "14": [
+        295,
+        287,
+        290
+    ],
+    "15": [
+        304,
+        299,
+        307
+    ],
+    "16": [
+        337,
+        333,
+        329
+    ],
+    "17": [
+        355,
+        359,
+        348
+    ],
+    "18": [
+        382,
+        372,
+        375
+    ],
+    "19": [
+        399,
+        405,
+        414
+    ],
+    "20": [
+        438,
+        419,
+        431
+    ]
+}
+
 train_ids: dict[str, list[int]] = {
     "3": [
         31,
@@ -13447,70 +13540,66 @@ test_ids: dict[str, list[int]] = {
     ]
 }
 
-# Sample data format:
-# {
-#     "id": 1,
-#     "exit": (3, 6),
-#     "min_num_moves": 2,
-#     "board": [
-#       [".", ".", ".", ".", ".", "."],
-#       [".", ".", "B", ".", ".", "."],
-#       ["R", "R", "B", ".", ".", "."],
-#       [".", ".", ".", ".", ".", "."],
-#       [".", ".", ".", ".", ".", "."],
-#       [".", ".", ".", ".", ".", "."]
-#     ]
-# }
+def board_for_solver(board: list[list[str]]) -> list[list[Optional[str]]]:
+  return [
+    [None if cell == "." else cell for cell in row]
+    for row in board
+  ]
 
-# Sample train/test ids format:
-# "3": [
-#     31,
-#     22,
-#     11,
-#     32,
-#     13,
-#     33,
-#     16,
-#     17,
-#     9,
-#     12,
-#     29
-# ]
+def create_dataset(
+  include_fsp, include_train, include_test, 
+  fsp_ids=fsp_ids, train_ids=train_ids, test_ids=test_ids,
+  data=data
+):
+  fsp_dataset: list[RushHourSample] = []
+  train_dataset: list[RushHourSample] = []
+  test_dataset: list[RushHourSample] = []
 
-def board_for_solver(board: List[List[str]]) -> List[List[Optional[str]]]:
-    return [
-        [None if cell == "." else cell for cell in row]
-        for row in board
-    ]
+  # build a lookup for data by id
+  data_by_id = {sample["id"]: sample for sample in data}
 
-def create_dataset(data=data, train_ids=train_ids, test_ids=test_ids):
-    train_dataset: list[RushHourSample] = []
-    test_dataset: list[RushHourSample] = []
+  def solve_from_sample(d):
+    norm_board = board_for_solver(d["board"])
 
-    # build a lookup for data by id
-    data_by_id = {sample["id"]: sample for sample in data}
+    puzzle = RushHourPuzzle(
+      id=d["id"],
+      exit=d["exit"],
+      min_num_moves=d["min_num_moves"],
+      board=copy.deepcopy(norm_board),
+    )
 
-    def solve_from_sample(d):
-      norm_board = board_for_solver(d["board"])
+    solution = solve_puzzle(puzzle)   # BFS
+    if solution is None:
+      solution = []  # unsolvable (rare but safe fallback)
 
-      puzzle = RushHourPuzzle(
-          id=d["id"],
-          exit=d["exit"],
-          min_num_moves=d["min_num_moves"],
-          board=copy.deepcopy(norm_board),
-      )
+    return solution
 
-      solution = solve_puzzle(puzzle)   # BFS
-      if solution is None:
-        solution = []  # unsolvable (rare but safe fallback)
+  print("\nCreating dataset...\n")
+  for level in range(3, 21):
+    level_key = str(level)
+    print(f"Processing level {level}...")
 
-      # Solution is already in your desired format:
-      # [{'name': 'E', 'direction': 'right', 'distance': 2}, ...]
-      return solution
+    if include_fsp:
+      for pid in fsp_ids.get(level_key, []):
+        d = data_by_id.get(pid)
+        if d is None:
+          continue
 
-    for level in range(3, 21):
-      level_key = str(level)
+        solved_moves = solve_from_sample(d)
 
+        # print(f"Level {level} - Solved fsp puzzle ID: {d["id"]} Moves: {len(solved_moves)} (Min: {d["min_num_moves"]})")
+
+        fsp_dataset.append(
+          RushHourSample(
+            id=d["id"],
+            board=copy.deepcopy(d["board"]),
+            exit=d["exit"],
+            min_num_moves=d["min_num_moves"],
+            solution_moves=solved_moves,
+          )
+        )
+
+    if include_train:
       for pid in train_ids.get(level_key, []):
         d = data_by_id.get(pid)
         if d is None:
@@ -13518,7 +13607,7 @@ def create_dataset(data=data, train_ids=train_ids, test_ids=test_ids):
 
         solved_moves = solve_from_sample(d)
 
-        print(f"Level {level} - Solved train puzzle ID:", d["id"], "Moves:", len(solved_moves), "(Expected:", d["min_num_moves"], ")")
+        # print(f"Level {level} - Solved train puzzle ID: {d["id"]} Moves: {len(solved_moves)} (Min: {d["min_num_moves"]})")
 
         train_dataset.append(
           RushHourSample(
@@ -13530,6 +13619,7 @@ def create_dataset(data=data, train_ids=train_ids, test_ids=test_ids):
           )
         )
 
+    if include_test:
       for pid in test_ids.get(level_key, []):
         d = data_by_id.get(pid)
         if d is None:
@@ -13537,24 +13627,16 @@ def create_dataset(data=data, train_ids=train_ids, test_ids=test_ids):
 
         solved_moves = solve_from_sample(d)
 
-        print(f"Level {level} - Solved test puzzle ID:", d["id"], "Moves:", len(solved_moves), "(Expected:", d["min_num_moves"], ")")
+        # print(f"Level {level} - Solved test puzzle ID: {d["id"]} Moves: {len(solved_moves)} (Min: {d["min_num_moves"]})")
 
         test_dataset.append(
           RushHourSample(
             id=d["id"],
-            board=d["board"],
+            board=copy.deepcopy(d["board"]),
             exit=d["exit"],
             min_num_moves=d["min_num_moves"],
             solution_moves=solved_moves,
           )
         )
 
-    return train_dataset, test_dataset
-
-if __name__ == "__main__":
-    train_dataset, test_dataset = create_dataset(data, train_ids, test_ids)
-
-    print(f"{len(train_dataset)} training samples")
-    print(f"{len(test_dataset)} test samples")
-
-    print(train_dataset[0].solution_moves)
+  return fsp_dataset, train_dataset, test_dataset
