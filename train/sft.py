@@ -13010,6 +13010,99 @@ data: list[dict[str, int | tuple[int, int] | list[list[str]]]] = [
   }
 ]
 
+fsp_ids: dict[str, list[int]] = {
+    "3": [
+        20,
+        26,
+        10
+    ],
+    "4": [
+        55,
+        54,
+        50
+    ],
+    "5": [
+        74,
+        63,
+        71
+    ],
+    "6": [
+        105,
+        93,
+        87
+    ],
+    "7": [
+        129,
+        126,
+        118
+    ],
+    "8": [
+        141,
+        131,
+        146
+    ],
+    "9": [
+        172,
+        170,
+        175
+    ],
+    "10": [
+        195,
+        187,
+        191
+    ],
+    "11": [
+        203,
+        208,
+        204
+    ],
+    "12": [
+        236,
+        238,
+        246
+    ],
+    "13": [
+        267,
+        266,
+        256
+    ],
+    "14": [
+        295,
+        287,
+        290
+    ],
+    "15": [
+        304,
+        299,
+        307
+    ],
+    "16": [
+        337,
+        333,
+        329
+    ],
+    "17": [
+        355,
+        359,
+        348
+    ],
+    "18": [
+        382,
+        372,
+        375
+    ],
+    "19": [
+        399,
+        405,
+        414
+    ],
+    "20": [
+        438,
+        419,
+        431
+    ]
+}
+
 train_ids: dict[str, list[int]] = {
     "3": [
         31,
@@ -13486,7 +13579,12 @@ def board_for_solver(board: List[List[str]]) -> List[List[Optional[str]]]:
         for row in board
     ]
 
-def create_dataset(include_train, include_test, data=data, train_ids=train_ids, test_ids=test_ids):
+def create_dataset(
+    include_fsp, include_train, include_test, 
+    fsp_ids=fsp_ids, train_ids=train_ids, test_ids=test_ids,
+    data=data
+):
+    fsp_dataset: list[RushHourSample] = []
     train_dataset: list[RushHourSample] = []
     test_dataset: list[RushHourSample] = []
 
@@ -13511,9 +13609,30 @@ def create_dataset(include_train, include_test, data=data, train_ids=train_ids, 
       # [{'name': 'E', 'direction': 'right', 'distance': 2}, ...]
       return solution
 
+    print("\nCreating dataset...\n")
     for level in range(3, 21):
         level_key = str(level)
         print(f"Processing level {level}...")
+
+        if include_fsp:
+            for pid in fsp_ids.get(level_key, []):
+                d = data_by_id.get(pid)
+                if d is None:
+                    continue
+
+                solved_moves = solve_from_sample(d)
+
+                # print(f"Level {level} - Solved fsp puzzle ID: {d["id"]} Moves: {len(solved_moves)} (Min: {d["min_num_moves"]})")
+
+                fsp_dataset.append(
+                    RushHourSample(
+                        id=d["id"],
+                        board=copy.deepcopy(d["board"]),
+                        exit=d["exit"],
+                        min_num_moves=d["min_num_moves"],
+                        solution_moves=solved_moves,
+                    )
+                )
 
         if include_train:
             for pid in train_ids.get(level_key, []):
@@ -13548,14 +13667,14 @@ def create_dataset(include_train, include_test, data=data, train_ids=train_ids, 
                 test_dataset.append(
                     RushHourSample(
                         id=d["id"],
-                        board=d["board"],
+                        board=copy.deepcopy(d["board"]),
                         exit=d["exit"],
                         min_num_moves=d["min_num_moves"],
                         solution_moves=solved_moves,
                     )
                 )
 
-    return train_dataset, test_dataset
+    return fsp_dataset, train_dataset, test_dataset
 
 sample_puzzle = RushHourSample(
     id=1,
@@ -13584,9 +13703,19 @@ output_example = [
     {"name": "R", "direction": "right", "distance": 4},
 ]
 
-def build_prompt(board: str, exit: str | tuple[int, int], output_example: list[dict[str, str | int]] = output_example) -> str:
+def board_to_str(board: list[list[str]]) -> str:
+    return "\n".join("".join(row) for row in board)
+
+def build_prompt(
+    board: str, 
+    exit: str | tuple[int, int], 
+    output_example: list[dict[str, str | int]] = output_example, 
+    few_shot_examples: list[tuple[str, list[dict[str, str | int]]]] | None = None
+) -> str:
+    """ Build prompt for SFT sample """
+    
     board_str = board
-    example_str = repr(output_example) # e.g. ["B down 1", "R right 2"]
+    example_str = repr(output_example)
 
     prompt = (
         "You have to solve the following 6x6 Rush Hour puzzle.\n"
@@ -13611,16 +13740,20 @@ def build_prompt(board: str, exit: str | tuple[int, int], output_example: list[d
         "Provide only the text response with no bolding or formatting.\n"
     )
 
+    if few_shot_examples:
+        for board, sln in few_shot_examples:
+            prompt += "\nExample Puzzle:\n"
+            prompt += f"{board}\n"
+            prompt += "\nSolution:\n"
+            prompt += f"{repr(sln)}\n"
+            
     return prompt
 
-def format_sample(puzzle: RushHourSample) -> str:
-    def board_to_str(board: list[list[str]]) -> str:
-        return "\n".join("".join(row) for row in board)
-    
+def format_sample(puzzle: RushHourSample,) -> str:
     prompt = build_prompt(
         board=board_to_str(puzzle.board),
         exit=puzzle.exit,
-        output_example=output_example
+        output_example=output_example,
     )
 
     target_list = repr(puzzle.solution_moves)
@@ -13636,7 +13769,7 @@ def sft(
 ) -> None:
     """ SFT Pipeline """
     
-    tokenizer, model = load_model_from_hf(model_name="Qwen/Qwen2.5-7B-Instruct")
+    tokenizer, model = load_model_from_hf(model_name=model_name)
 
     data = Dataset.from_list(raw_data)
 
@@ -13664,33 +13797,41 @@ def sft(
     tokenizer.save_pretrained(output_dir)
 
 if __name__ == "__main__":
-    train_puzzles, _ = create_dataset(True, False)
-    # print(train_puzzles[:5])
+    _, train_puzzles, _ = create_dataset(
+        include_fsp=False,
+        include_train=True,
+        include_test=False,
+    )
 
-    # print(format_sample(train_puzzles[0]))
-    
-    raw_data = [{"text": format_sample(puzzle)} for puzzle in train_puzzles]
+    # fsp_formatted = [(board_to_str(puzzle.board), puzzle.solution_moves) for puzzle in fsp_puzzles[0:3]]
+    # print(build_prompt(
+    #     board=board_to_str(train_puzzles[0].board),
+    #     exit=train_puzzles[0].exit,
+    #     few_shot_examples=fsp_formatted
+    # ))
+     
+    # raw_data = [{"text": format_sample(puzzle)} for puzzle in train_puzzles]
 
-    args = TrainingArguments(
-        output_dir="sft_out",
+    # args = TrainingArguments(
+    #     output_dir="sft_out",
 
-        num_train_epochs=8,
-        learning_rate=2e-4,
-        warmup_ratio = 0.03,
-        lr_scheduler_type = "cosine",
-        per_device_train_batch_size=4,      # fits 4-bit + LoRA
-        gradient_checkpointing=True,        # saves VRAM
+    #     num_train_epochs=8,
+    #     learning_rate=2e-4,
+    #     warmup_ratio = 0.03,
+    #     lr_scheduler_type = "cosine",
+    #     per_device_train_batch_size=4,      # fits 4-bit + LoRA
+    #     gradient_checkpointing=True,        # saves VRAM
         
-        weight_decay=0.0,
-        bf16=True,                          # A100 supports bf16
+    #     weight_decay=0.0,
+    #     bf16=True,                          # A100 supports bf16
 
-        group_by_length=True,
-        push_to_hub=True,
-        hub_model_id="saintsauce/Qwen2.5-7B-RushHour-SFT"
-    )
+    #     group_by_length=True,
+    #     push_to_hub=True,
+    #     hub_model_id="saintsauce/Qwen2.5-7B-RushHour-SFT"
+    # )
     
-    sft(
-        "Qwen/Qwen2.5-7B-Instruct",
-        raw_data=raw_data,
-        train_args=args
-    )
+    # sft(
+    #     "Qwen/Qwen2.5-7B-Instruct",
+    #     raw_data=raw_data,
+    #     train_args=args
+    # )
