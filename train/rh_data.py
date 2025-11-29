@@ -1,7 +1,7 @@
 import copy
 from typing import Optional
 from puzzle import RushHourPuzzle
-from rh import RushHourSample
+from puzzle import RushHourSample
 from solver import solve_puzzle
 
 data: list[dict[str, int | tuple[int, int] | list[list[str]]]] = [

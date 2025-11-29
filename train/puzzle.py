@@ -1,3 +1,24 @@
+from copy import deepcopy
+from dataclasses import dataclass
+
+@dataclass
+class RushHourSample:
+    id: int
+    board: list[list[str]]
+    exit: str | tuple[int, int]
+    min_num_moves: int
+    solution_moves: list[dict[str, str | int]]
+
+    @classmethod
+    def from_dict(cls, d: dict) -> "RushHourSample":
+        return cls(
+            id=d["id"],
+            board=d["board"],
+            exit=d["exit"],
+            min_num_moves=d["min_num_moves"],
+            solution_moves=d["solution_moves"],
+        )
+
 class RushHourException(Exception):
     """Base exception class for Rush Hour errors."""
     pass
@@ -137,3 +158,38 @@ class RushHourPuzzle:
         exit_row = self.exit[0]
         exit_col = self.exit[1]
         return self.board[exit_row-1][exit_col-1] == 'R'
+
+def validate_solution(puzzle, moves, check_optimal=False):
+    sim = RushHourPuzzle(
+        id=puzzle.id,
+        exit=puzzle.exit,
+        min_num_moves=puzzle.min_num_moves,
+        board=deepcopy(puzzle.board),
+    )
+
+    for i, m in enumerate(moves, 1):
+        if not isinstance(m, dict):
+            print(f"move {i} is not a dict: {m}")
+            return False, "TYPE_ERROR"
+        if not all(k in m for k in ("name", "direction", "distance")):
+            print(f"move {i} is missing keys: {m}")
+            return False, "MISSING_KEYS"
+        try:
+            sim.move(m["name"], m["direction"], int(m["distance"]))
+        except CarNotFound as e:
+            print(f"move {i} car not found: {e}")
+            return False, "CAR_NOT_FOUND"
+        except InvalidMove as e:
+            print(f"move {i} invalid: {e}")
+            return False, "INVALID_MOVE"
+        except Exception as e:
+            print(f"move {i} unknown error: {e}")
+            return False, "UNKNOWN_ERROR"
+
+    if not sim.solved():
+        return False, "UNSOLVED"
+
+    if check_optimal and len(moves) != puzzle.min_num_moves:
+        return True, "NOT_OPTIMAL"
+
+    return True, "OPTIMAL"
