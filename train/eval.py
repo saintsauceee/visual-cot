@@ -205,12 +205,36 @@ if __name__ == "__main__":
         default=3,
         help="Number of few-shot examples to include in the prompt (0 or 3) or -1 for sample",
     )
+    parser.add_argument(
+        "--model",
+        choices=["instruct", "sft", "rl"],
+        default="sft",
+        help="Model type to evaluate: 'instruct', 'sft' or 'rl'",
+    )
+    parser.add_argument(
+        "--model-name",
+        type=str,
+        default=None,
+        help="Optional: full HuggingFace model id to override the chosen --model",
+    )
     args = parser.parse_args()
 
     if args.shots not in [-1, 0, 3]:
         raise ValueError("--shots must be -1, 0 or 3")
 
-    model_name_str = "saintsauce/Qwen2.5-7B-RushHour-SFT"
+    # Select model id based on the chosen model type or explicit override
+    if args.model_name:
+        model_name_str = args.model_name
+    else:
+        if args.model == "instruct":
+            model_name_str = "Qwen/Qwen2.5-3B-Instruct"
+        elif args.model == "sft":
+            model_name_str = "saintsauce/Qwen2.5-7B-RushHour-SFT"
+        elif args.model == "rl":
+            model_name_str = "saintsauce/Qwen2.5-7B-RushHour-RL"
+        else:
+            raise ValueError(f"Unknown model type: {args.model}")
+    
     tokenizer, model = load_model_from_hf(model_name=model_name_str)
     model.eval()
 
