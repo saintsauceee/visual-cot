@@ -262,6 +262,9 @@ if __name__ == "__main__":
                 verbose=False,
                 print_output=True
             )
+
+            print(f"\nValidation Result: {label}")
+            print(f"Inference time: {infer_time:.3f} seconds\n")
             
             print(f"\n{"=" * 80}")
             print("PROMPT (Few-shot):")
