@@ -19,6 +19,9 @@ def eval_sol(puzzle, solution):
 
     for move in solution:
         try:
+            if not isinstance(move['direction'], str):
+                raise InvalidMove(f"Invalid move: {move}")
+
             puzzle_obj.move(move["name"], move["direction"].lower(), move["distance"])
             completed_moves += 1
         except InvalidMove:
