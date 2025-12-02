@@ -8,6 +8,7 @@ from transformers import (
 
 import rh_data
 from puzzle import RushHourSample
+from hf import BASE_MODEL_NAME
 
 # Sample data format:
 # {
@@ -38,8 +39,6 @@ from puzzle import RushHourSample
 #     12,
 #     29
 # ]
-
-BASE = "Qwen/Qwen2.5-7B-Instruct"
 
 output_example = [
     {"name": "B", "direction": "left", "distance": 1},
@@ -114,13 +113,13 @@ def sft(
     output_dir: str = "sft_out",
     max_length: int = 2048
 ) -> None:
-    tokenizer = AutoTokenizer.from_pretrained(BASE, use_fast=True)
+    tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL_NAME, use_fast=True)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
 
     base_model = AutoModelForCausalLM.from_pretrained(
-        BASE,
+        BASE_MODEL_NAME,
         torch_dtype=torch.bfloat16,
         device_map="auto",
     )
@@ -194,7 +193,7 @@ if __name__ == "__main__":
     )
     
     sft(
-        BASE,
+        BASE_MODEL_NAME,
         raw_data=raw_data,
         train_args=args
     )
