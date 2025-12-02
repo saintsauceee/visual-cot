@@ -1,5 +1,8 @@
 import ast
+from typing import cast
 from copy import deepcopy
+
+from transformers import PreTrainedModel
 
 import rh_data
 from puzzle import RushHourSample, validate_solution
@@ -74,26 +77,18 @@ def build_rl_dataset(
 
     return Dataset.from_list(rows)
 
-def grpo_rh_reward(
-    prompts,
-    completions,
-    completions_ids,
-    trainer_state,
-    id,
-    board,
-    exit,
-    min_num_moves,
-    **kwargs,
-):
+def grpo_rh_reward(prompts, completions, **kwargs):
+    ids = kwargs.get("id")
+    boards = kwargs.get("board")
+    exits = kwargs.get("exit")
+    min_moves = kwargs.get("min_num_moves")
+
+    if ids is None or boards is None or exits is None or min_moves is None:
+        return [0.0 for _ in completions]
+
     rewards: list[float] = []
 
-    for comp, pid, b, ex, mn in zip(
-        completions,
-        id,
-        board,
-        exit,
-        min_num_moves,
-    ):
+    for comp, pid, b, ex, mn in zip(completions, ids, boards, exits, min_moves):
         exit_coord = tuple(ex) if isinstance(ex, (list, tuple)) else ex
 
         puzzle = RushHourSample(
@@ -104,10 +99,10 @@ def grpo_rh_reward(
             solution_moves=[],
         )
 
-        reward = rh_reward(puzzle, comp)
-        rewards.append(float(reward))
+        rewards.append(float(rh_reward(puzzle, comp)))
 
     return rewards
+
 
 def train_grpo(
     output_dir: str = "rl_out",
@@ -138,17 +133,13 @@ def train_grpo(
         per_device_train_batch_size=per_device_train_batch_size,
         gradient_accumulation_steps=gradient_accumulation_steps,
         bf16=True,
-        max_prompt_length=max_prompt_length,
-        max_completion_length=max_completion_length,
-        num_generations=num_generations,
         remove_unused_columns=False,
         save_steps=200,
         save_total_limit=2,
-        loss_type="dr_grpo",
     )
 
     trainer = GRPOTrainer(
-        model=model,
+        model=cast(PreTrainedModel, model),
         processing_class=tokenizer,
         args=training_args,
         reward_funcs=grpo_rh_reward,
@@ -159,6 +150,9 @@ def train_grpo(
 
     model.save_pretrained(output_dir)
     tokenizer.save_pretrained(output_dir)
+
+    model.push_to_hub("saintsauce/Qwen2.5-7B-RushHour-RL")
+    tokenizer.push_to_hub("saintsauce/Qwen2.5-7B-RushHour-RL")
 
 if __name__ == "__main__":
     train_grpo()
