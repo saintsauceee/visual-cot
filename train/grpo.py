@@ -7,7 +7,7 @@ from transformers import PreTrainedModel
 import rh_data
 from puzzle import RushHourSample, validate_solution
 from hf import load_sft_full_precision
-from sft import create_dataset, board_to_str, build_prompt
+from sft import board_to_str, build_prompt
 
 from datasets import Dataset
 from trl import GRPOConfig, GRPOTrainer
