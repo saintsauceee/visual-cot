@@ -87,7 +87,17 @@ def build_rl_dataset(
 
     return Dataset.from_list(rows)
 
+DEBUG_LIMIT = 3
+_debug_count = 0
+
 def grpo_rh_reward(prompts, completions, **kwargs):
+    global _debug_count
+    if _debug_count < DEBUG_LIMIT:
+        print("=== SAMPLE COMPLETION ===")
+        print(completions[0][:400])
+        print("=========================")
+        _debug_count += 1
+        
     ids = kwargs.get("id")
     boards = kwargs.get("board")
     exits = kwargs.get("exit")
@@ -96,11 +106,9 @@ def grpo_rh_reward(prompts, completions, **kwargs):
     if ids is None or boards is None or exits is None or min_moves is None:
         return [0.0 for _ in completions]
 
-    rewards: list[float] = []
-
+    rewards = []
     for comp, pid, b, ex, mn in zip(completions, ids, boards, exits, min_moves):
         exit_coord = tuple(ex) if isinstance(ex, (list, tuple)) else ex
-
         puzzle = RushHourSample(
             id=pid,
             board=b,
@@ -108,11 +116,8 @@ def grpo_rh_reward(prompts, completions, **kwargs):
             min_num_moves=mn,
             solution_moves=[],
         )
-
         rewards.append(float(rh_reward(puzzle, comp)))
-
     return rewards
-
 
 def train_grpo(
     output_dir: str = "rl_out",
