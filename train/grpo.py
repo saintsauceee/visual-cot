@@ -1,3 +1,4 @@
+import re
 import ast
 from typing import cast
 from copy import deepcopy
@@ -12,9 +13,18 @@ from sft import board_to_str, build_prompt
 from datasets import Dataset
 from trl import GRPOConfig, GRPOTrainer
 
+def extract_first_list(text: str) -> str:
+    m = LIST_PATTERN.search(text)
+    if not m:
+        raise ValueError("no list found")
+    return m.group(0)
+
+LIST_PATTERN = re.compile(r"\[.*?\]", re.DOTALL)
+
 def rh_reward(puzzle: RushHourSample, gen_text: str) -> float:
     try:
-        moves = ast.literal_eval(gen_text)
+        list_str = extract_first_list(gen_text)
+        moves = ast.literal_eval(list_str)
         if not isinstance(moves, list):
             return -1.0
     except Exception:
