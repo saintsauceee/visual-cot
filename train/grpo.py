@@ -106,7 +106,6 @@ def grpo_rh_reward(prompts, completions, **kwargs):
 
 def train_grpo(
     output_dir: str = "rl_out",
-    seed: int = 42,
     min_level: int = 3,
     max_level: int = 20,
     learning_rate: float = 5e-6,
@@ -129,8 +128,13 @@ def train_grpo(
         num_train_epochs=num_train_epochs,
         per_device_train_batch_size=per_device_train_batch_size,
         gradient_accumulation_steps=gradient_accumulation_steps,
+
         num_generations=4,
         generation_batch_size=4,
+        
+        max_prompt_length=1024,
+        max_completion_length=128,
+        
         bf16=True,
     )
 
