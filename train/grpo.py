@@ -113,9 +113,6 @@ def train_grpo(
     num_train_epochs: int = 1,
     per_device_train_batch_size: int = 1,
     gradient_accumulation_steps: int = 4,
-    num_generations: int = 4,
-    max_prompt_length: int = 1024,
-    max_completion_length: int = 256,
 ):
     # no quantization for GRPO
     tokenizer, model = load_sft_full_precision()
@@ -132,10 +129,9 @@ def train_grpo(
         num_train_epochs=num_train_epochs,
         per_device_train_batch_size=per_device_train_batch_size,
         gradient_accumulation_steps=gradient_accumulation_steps,
+        num_generations=4,
+        generation_batch_size=4,
         bf16=True,
-        remove_unused_columns=False,
-        save_steps=200,
-        save_total_limit=2,
     )
 
     trainer = GRPOTrainer(
