@@ -18,7 +18,7 @@ def generate_moves(puzzle: RushHourPuzzle):
     for r in range(size):
         for c in range(size):
             car = puzzle.board[r][c]
-            if car is None or car in seen:
+            if car == '.' or car in seen:
                 continue
             seen.add(car)
 
@@ -32,7 +32,7 @@ def generate_moves(puzzle: RushHourPuzzle):
                 row, left_c = positions[0]
                 dist = 0
                 cc = left_c - 1
-                while cc >= 0 and puzzle.board[row][cc] is None:
+                while cc >= 0 and puzzle.board[row][cc] == '.':
                     dist += 1
                     moves.append({"name": car, "direction": "left", "distance": dist})
                     cc -= 1
@@ -40,7 +40,7 @@ def generate_moves(puzzle: RushHourPuzzle):
                 row, right_c = positions[-1]
                 dist = 0
                 cc = right_c + 1
-                while cc < size and puzzle.board[row][cc] is None:
+                while cc < size and puzzle.board[row][cc] == '.':
                     dist += 1
                     moves.append({"name": car, "direction": "right", "distance": dist})
                     cc += 1
@@ -50,7 +50,7 @@ def generate_moves(puzzle: RushHourPuzzle):
                 top_r, col = positions[0]
                 dist = 0
                 rr = top_r - 1
-                while rr >= 0 and puzzle.board[rr][col] is None:
+                while rr >= 0 and puzzle.board[rr][col] == '.':
                     dist += 1
                     moves.append({"name": car, "direction": "up", "distance": dist})
                     rr -= 1
@@ -58,7 +58,7 @@ def generate_moves(puzzle: RushHourPuzzle):
                 bottom_r, col = positions[-1]
                 dist = 0
                 rr = bottom_r + 1
-                while rr < size and puzzle.board[rr][col] is None:
+                while rr < size and puzzle.board[rr][col] == '.':
                     dist += 1
                     moves.append({"name": car, "direction": "down", "distance": dist})
                     rr += 1

@@ -13638,5 +13638,7 @@ def create_dataset(
             solution_moves=solved_moves,
           )
         )
+  
+  print()
 
   return fsp_dataset, train_dataset, test_dataset

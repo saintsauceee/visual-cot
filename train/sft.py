@@ -77,8 +77,9 @@ def build_prompt(
         "Each move is a dict with keys 'name', 'direction', 'distance'.\n"
         "Here is an example of the correct format:\n"
         f"{example_str}\n\n"
-        "Return only a Python list of moves, no explanation.\n"
-        "Provide only the text response with no bolding or formatting.\n"
+        "Return the raw Python list. Do not use Markdown. Do not use code blocks.\n"
+        "Do not include '```python' or '```'.\n"
+        "Start your response with '[' and end with ']'.\n"
     )
 
     if few_shot_examples:
