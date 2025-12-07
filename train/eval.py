@@ -6,7 +6,7 @@ import rh_data
 import argparse
 from tqdm import tqdm
 from datetime import datetime
-from train.sft import build_prompt
+from sft import build_prompt
 import matplotlib.pyplot as plt
 from collections import defaultdict, Counter
 from hf import load_instruct_base, load_with_adapter

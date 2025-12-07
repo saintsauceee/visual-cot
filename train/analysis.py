@@ -155,6 +155,42 @@ def aggregate(results):
 
     return levels, success, label_counts
 
+def plot_results(shots: int, levels: list[int], success: list[float], label_counts: Counter):
+    plt.bar(full_levels, success_for_all_levels)
+    plt.xlabel("Puzzle Level (Minimum Moves)")
+    plt.ylabel("Average Success Rate")
+    
+    shot_str = f"{shots}-shot"
+    plt.title(f"Average Success Rate by Puzzle Level - {"Gemini 2.5 Pro"} ({shot_str})")
+    
+    plt.ylim(0, 1)
+    plt.xticks(full_levels)
+    plt.tight_layout()
+    
+    fname1 = f"success_rate_by_level_{shot_str}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+    plt.savefig(fname1, bbox_inches='tight')
+    print(f"Saved plot: {os.path.abspath(fname1)}")
+    
+    plt.show()
+
+    # Label distribution
+    plt.figure()
+    
+    labels = list(label_counts.keys())
+    counts = [label_counts[l] for l in labels]
+    
+    plt.bar(range(len(labels)), counts)
+    plt.xticks(range(len(labels)), labels, rotation=45, ha="right")
+    plt.ylabel("Count")
+    plt.title(f"Label Distribution - {"Gemini 2.5 Pro"} ({shot_str})")
+    plt.tight_layout()
+    
+    fname2 = f"label_distribution_{shot_str}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+    plt.savefig(fname2, bbox_inches='tight')
+    print(f"Saved plot: {os.path.abspath(fname2)}")
+    
+    plt.show()
+
 if __name__ == "__main__":
     shots = 3
 
@@ -177,30 +213,3 @@ if __name__ == "__main__":
     success_map = dict(zip(levels, success)) if levels else {}
     full_levels = list(range(3, 21))
     success_for_all_levels = [success_map.get(l, 0.0) for l in full_levels]
-
-    plt.bar(full_levels, success_for_all_levels)
-    plt.xlabel("Puzzle Level (Minimum Moves)")
-    plt.ylabel("Average Success Rate")
-    shot_str = f"{shots}-shot"
-    plt.title(f"Average Success Rate by Puzzle Level - {"Gemini 2.5 Pro"} ({shot_str})")
-    plt.ylim(0, 1)
-    plt.xticks(full_levels)
-    plt.tight_layout()
-    fname1 = f"success_rate_by_level_{shot_str}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
-    plt.savefig(fname1, bbox_inches='tight')
-    print(f"Saved plot: {os.path.abspath(fname1)}")
-    plt.show()
-
-    # Label distribution
-    plt.figure()    
-    labels = list(label_counts.keys())
-    counts = [label_counts[l] for l in labels]
-    plt.bar(range(len(labels)), counts)
-    plt.xticks(range(len(labels)), labels, rotation=45, ha="right")
-    plt.ylabel("Count")
-    plt.title(f"Label Distribution - {"Gemini 2.5 Pro"} ({shot_str})")
-    plt.tight_layout()
-    fname2 = f"label_distribution_{shot_str}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
-    plt.savefig(fname2, bbox_inches='tight')
-    print(f"Saved plot: {os.path.abspath(fname2)}")
-    plt.show()
