@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="607f0f09-1d18-4dee-8b40-97fb5db1818f" name="Changes" comment="" />
+    <list default="true" id="607f0f09-1d18-4dee-8b40-97fb5db1818f" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/survey/clear_trends.png" beforeDir="false" afterPath="$PROJECT_DIR$/survey/clear_trends.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/survey/difficulty_analysis.png" beforeDir="false" afterPath="$PROJECT_DIR$/survey/difficulty_analysis.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/survey/survey.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/survey/survey.ipynb" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -52,6 +57,9 @@
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/data/survey" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/survey" />
+    </key>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -70,7 +78,8 @@
       <updated>1764076562000</updated>
       <workItem from="1764076563255" duration="710000" />
       <workItem from="1765044088881" duration="439000" />
-      <workItem from="1765044577324" duration="1396000" />
+      <workItem from="1765044577324" duration="2486000" />
+      <workItem from="1765078204611" duration="60000" />
     </task>
     <servers />
   </component>
