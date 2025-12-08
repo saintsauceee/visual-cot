@@ -14,21 +14,32 @@ import rh_data
 from puzzle import RushHourSample, validate_solution
 from sft import board_to_str, build_prompt
 
-MAX_WORKERS = 10
-
-API_KEYS = [
-    "AIzaSyDkUUoVBNHqMQWquADrZ4v4VOUwQuvYCJY",
-    "AIzaSyAfIriooSuGAxuLz-le-k5wxfQ4PFWgz8I"
-]
-
-GOOGLE_API_KEY = "AIzaSyAfIriooSuGAxuLz-le-k5wxfQ4PFWgz8I"
 MODEL_NAME = "gemini-2.5-pro"
 
-client = genai.Client(
-  api_key=GOOGLE_API_KEY
-)
+MAX_WORKERS = 5 # set to 10 for augmented visual CoT experiments
 
-def generate_output(prompt: str):
+KEYS = [
+    "AIzaSyAWaU3Fv179rHJ3Fz5-ktopvj7_d-E1pbY",
+    "AIzaSyDiYC9gdVe_hPdTK4PZZEg7W95zObeaJaE",
+    "AIzaSyAHgKVAxqPDxhRfXDvGzqsdUkPn-yUZ4lw",
+    "AIzaSyAHgKVAxqPDxhRfXDvGzqsdUkPn-yUZ4lw",
+    "AIzaSyA2D8FDMgZx8uQXrxxZXt5HA8H7Yu8v3rs",
+]
+
+# map each level to an index into KEYS
+LEVEL_TO_KEY_IDX = {
+    3: 0, 4: 1, 5: 2, 6: 3, 7: 4, 
+    8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 
+    13: 0, 14: 1, 15: 2, 16: 3, 17: 4,       
+    18: 0, 19: 1, 20: 2,       
+}
+
+clients = [
+    genai.Client(api_key=k)
+    for k in KEYS
+]
+
+def generate_output(prompt: str, client: genai.Client):
     max_retries = 3
     delay_seconds = 5
 
@@ -74,6 +85,7 @@ def generate_output(prompt: str):
 
 def evaluate_sample(
     sample: RushHourSample,
+    client: genai.Client,
     verbose: bool = False, 
     few_shot_examples: list[tuple[str, list[dict[str, str | int]]]] | None = None,
 ):
@@ -89,7 +101,10 @@ def evaluate_sample(
         print(prompt + "\n")
         print("=" * 80 + "\n")
 
-    thoughts, answer, duration = generate_output(prompt)
+    thoughts, answer, duration = generate_output(
+        prompt, 
+        client
+    )
 
     if verbose:
         print("Generated Solution:\n")
@@ -119,9 +134,10 @@ def model_evaluate(
     fsp_puzzles: list[RushHourSample],
     test_puzzles: list[RushHourSample]
 ):
-    results = []
+    results: list[dict] = []
 
-    fsp_by_level = defaultdict(list)
+    # build few-shot examples grouped by level
+    fsp_by_level: dict[int, list[tuple[str, list[dict[str, str | int]]]]] = defaultdict(list)
     if include_fsp:
         for puzzle in fsp_puzzles:
             level = getattr(puzzle, "min_num_moves", None)
@@ -130,7 +146,8 @@ def model_evaluate(
                     (board_to_str(puzzle.board), puzzle.solution_moves)
                 )
 
-    for level in range(3, 21):
+    def evaluate_level(level: int) -> list[dict]:
+        """ Evaluate all puzzles for a single level, possibly in parallel. """
 
         # choose few-shot examples for this level
         if include_fsp:
@@ -140,39 +157,68 @@ def model_evaluate(
                 curr_level_examples = None
         else:
             curr_level_examples = None
-        
+
+        # collect puzzles for this level
         level_puzzles = [
             (idx, p) for idx, p in enumerate(test_puzzles)
             if getattr(p, "min_num_moves", None) == level
         ]
         if not level_puzzles:
-            continue
+            return []
 
+        # pick client/key for this level
+        key_idx = LEVEL_TO_KEY_IDX[level]
+        client_for_level = clients[key_idx]
+
+        level_results: list[dict] = []
+
+        # inner pool: parallel over puzzles in this level
         with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
             futures = {
                 executor.submit(
                     evaluate_sample,
                     puzzle,
+                    client_for_level,
                     False,
                     curr_level_examples,
                 ): (idx, puzzle)
                 for idx, puzzle in level_puzzles
             }
 
-            for future in tqdm(as_completed(futures), total=len(futures), desc=f"Evaluating Level {level}", unit="puzzle"):
+            for future in tqdm(
+                as_completed(futures),
+                total=len(futures),
+                desc=f"Evaluating Level {level}",
+                unit="puzzle"
+            ):
                 idx, puzzle = futures[future]
                 try:
                     valid, label, thoughts, answer, duration = future.result()
                 except Exception as e:
                     valid, label, duration = False, f"EXCEPTION: {e}", 0.0
 
-                results.append({
+                level_results.append({
                     "idx": idx,
                     "level": level,
                     "valid": valid,
                     "label": label,
                     "time": duration,
                 })
+
+        return level_results
+
+    levels = list(range(3, 21))
+
+    # outer pool: parallel over levels
+    with ThreadPoolExecutor(max_workers=len(KEYS)) as level_executor:
+        level_futures = {
+            level_executor.submit(evaluate_level, level): level
+            for level in levels
+        }
+
+        for future in as_completed(level_futures):
+            level_results = future.result()
+            results.extend(level_results)
 
     return results
 
