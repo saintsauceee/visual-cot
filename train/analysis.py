@@ -14,7 +14,7 @@ import rh_data
 from puzzle import RushHourSample, validate_solution
 from sft import board_to_str, build_prompt
 
-MAX_WORKERS = 16
+MAX_WORKERS = 10
 
 API_KEYS = [
     "AIzaSyDkUUoVBNHqMQWquADrZ4v4VOUwQuvYCJY",
