@@ -16,22 +16,22 @@ from sft import board_to_str, build_prompt
 
 MODEL_NAME = "gemini-2.5-pro"
 
-MAX_WORKERS = 5 # set to 10 for augmented visual CoT experiments
+MAX_WORKERS = 10 # set to 10 for augmented visual CoT experiments
 
 KEYS = [
-    "AIzaSyAWaU3Fv179rHJ3Fz5-ktopvj7_d-E1pbY",
-    "AIzaSyDiYC9gdVe_hPdTK4PZZEg7W95zObeaJaE",
-    "AIzaSyAHgKVAxqPDxhRfXDvGzqsdUkPn-yUZ4lw",
-    "AIzaSyAHgKVAxqPDxhRfXDvGzqsdUkPn-yUZ4lw",
-    "AIzaSyA2D8FDMgZx8uQXrxxZXt5HA8H7Yu8v3rs",
+    "AIzaSyD-n1tOAJDleD1kZn7tneGinHgPZ1fZKcw",
+    "AIzaSyCfLo1kXCmRLJqbvyU-r02GmWfiZ28SwGY",
+    "AIzaSyDJ2fWvzbdHKN7T63-oa9553FCNLKe7Zys",
+    "AIzaSyAuuHz4S4ESFdFYdt9BNWRlQpAglKns4YY",
+    "AIzaSyA5qM4pCfr0iHFPIQWJljy67W2Ov-r5niY",
+    "AIzaSyPlaceholderFor6thKey"
 ]
 
 # map each level to an index into KEYS
 LEVEL_TO_KEY_IDX = {
-    3: 0, 4: 1, 5: 2, 6: 3, 7: 4, 
-    8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 
-    13: 0, 14: 1, 15: 2, 16: 3, 17: 4,       
-    18: 0, 19: 1, 20: 2,       
+    3: 0, 4: 1, 5: 2, 6: 3, 7: 4, 8: 5,
+    9: 0, 10: 1, 11: 2, 12: 3, 13: 4, 14: 5,
+    15: 0, 16: 1, 17: 2, 18: 3, 19: 4, 20: 5,
 }
 
 clients = [
