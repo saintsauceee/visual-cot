@@ -1,5 +1,6 @@
 import os
 import ast
+import argparse
 import time
 from tqdm import tqdm
 from datetime import datetime
@@ -16,22 +17,20 @@ from sft import board_to_str, build_prompt
 
 MODEL_NAME = "gemini-2.5-pro"
 
-MAX_WORKERS = 10 # set to 10 for augmented visual CoT experiments
-
 KEYS = [
     "AIzaSyD-n1tOAJDleD1kZn7tneGinHgPZ1fZKcw",
     "AIzaSyCfLo1kXCmRLJqbvyU-r02GmWfiZ28SwGY",
     "AIzaSyDJ2fWvzbdHKN7T63-oa9553FCNLKe7Zys",
     "AIzaSyAuuHz4S4ESFdFYdt9BNWRlQpAglKns4YY",
     "AIzaSyA5qM4pCfr0iHFPIQWJljy67W2Ov-r5niY",
-    "AIzaSyPlaceholderFor6thKey"
 ]
 
 # map each level to an index into KEYS
 LEVEL_TO_KEY_IDX = {
-    3: 0, 4: 1, 5: 2, 6: 3, 7: 4, 8: 5,
-    9: 0, 10: 1, 11: 2, 12: 3, 13: 4, 14: 5,
-    15: 0, 16: 1, 17: 2, 18: 3, 19: 4, 20: 5,
+    3: 0, 4: 1, 5: 2, 6: 3, 7: 4, 
+    8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 
+    13: 0, 14: 1, 15: 2, 16: 3, 17: 4, 
+    18: 0, 19: 1, 20: 2,
 }
 
 clients = [
@@ -58,6 +57,10 @@ def generate_output(prompt: str, client: genai.Client):
             end_time = time.time()
             duration = end_time - start_time
 
+            # thinking token count
+            ttc = response.usage_metadata.thoughts_token_count if response.usage_metadata else 0
+            # print(f"[INFO] Gemini response received in {duration:.3f}s (TTC: {ttc})")
+
             thoughts, answer = "", ""
             for part in response.candidates[0].content.parts:  # type: ignore
                 text = getattr(part, "text", None)
@@ -69,16 +72,16 @@ def generate_output(prompt: str, client: genai.Client):
                 else:
                     answer += text + "\n"
 
-            return thoughts, answer, duration
+            return thoughts, answer, duration, ttc
 
         except Exception as e:
-            if "409" not in str(e):
+            if "409" not in str(e) and "429" not in str(e):
                 raise
 
             if attempt == max_retries - 1:
                 raise
 
-            print(f"[WARN] Gemini 409 on attempt {attempt+1}/{max_retries}, retrying in {delay_seconds}s: {e}")
+            print(f"[WARN] Gemini error on attempt {attempt+1}/{max_retries}, retrying in {delay_seconds}s: {e}")
             time.sleep(delay_seconds)
     
     raise RuntimeError("generate_output: exhausted retries without success")
@@ -101,7 +104,7 @@ def evaluate_sample(
         print(prompt + "\n")
         print("=" * 80 + "\n")
 
-    thoughts, answer, duration = generate_output(
+    thoughts, answer, duration, ttc = generate_output(
         prompt, 
         client
     )
@@ -117,7 +120,7 @@ def evaluate_sample(
     except Exception as e:
         if verbose:
             print(f"failed to parse generated solution: {e}")
-        return False, "PARSE_ERROR", "", "", 0.0
+        return False, "PARSE_ERROR", thoughts, answer, duration, ttc, prompt
     
     valid, label = validate_solution(sample, gen_moves, check_optimal=True)
 
@@ -127,7 +130,7 @@ def evaluate_sample(
         else:
             print(f"Solution is invalid: {label}")
     
-    return valid, label, thoughts, answer, duration
+    return valid, label, thoughts, answer, duration, ttc, prompt
 
 def model_evaluate(
     include_fsp: bool,
@@ -147,8 +150,6 @@ def model_evaluate(
                 )
 
     def evaluate_level(level: int) -> list[dict]:
-        """ Evaluate all puzzles for a single level, possibly in parallel. """
-
         # choose few-shot examples for this level
         if include_fsp:
             curr_level_examples = fsp_by_level.get(level, None)
@@ -173,7 +174,7 @@ def model_evaluate(
         level_results: list[dict] = []
 
         # inner pool: parallel over puzzles in this level
-        with ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+        with ThreadPoolExecutor(max_workers=len(level_puzzles)) as executor:
             futures = {
                 executor.submit(
                     evaluate_sample,
@@ -193,9 +194,9 @@ def model_evaluate(
             ):
                 idx, puzzle = futures[future]
                 try:
-                    valid, label, thoughts, answer, duration = future.result()
+                    valid, label, thoughts, answer, duration, ttc, prompt = future.result()
                 except Exception as e:
-                    valid, label, duration = False, f"EXCEPTION: {e}", 0.0
+                    valid, label, duration, thoughts, answer, ttc, prompt = False, f"EXCEPTION: {e}", 0.0, "", "", 0, ""
 
                 level_results.append({
                     "idx": idx,
@@ -203,6 +204,10 @@ def model_evaluate(
                     "valid": valid,
                     "label": label,
                     "time": duration,
+                    "ttc": ttc,
+                    "prompt": prompt,
+                    "thoughts": thoughts,
+                    "answer": answer,
                 })
 
         return level_results
@@ -210,7 +215,7 @@ def model_evaluate(
     levels = list(range(3, 21))
 
     # outer pool: parallel over levels
-    with ThreadPoolExecutor(max_workers=len(KEYS)) as level_executor:
+    with ThreadPoolExecutor(max_workers=len(levels)) as level_executor:
         level_futures = {
             level_executor.submit(evaluate_level, level): level
             for level in levels
@@ -224,6 +229,7 @@ def model_evaluate(
 
 def aggregate(results):
     by_level = defaultdict(list)
+    ttc_by_level = defaultdict(list)
     label_counts = Counter()
     total_time = 0.0
     sample_count = 0
@@ -232,19 +238,21 @@ def aggregate(results):
         total_time += r.get("time", 0.0)
         if r["level"] is not None:
             by_level[r["level"]].append(r["valid"])
+            ttc_by_level[r["level"]].append(r.get("ttc", 0))
         label_counts[r["label"]] += 1
 
         sample_count += 1
 
     levels = sorted(by_level.keys())
     success = [sum(v) / len(v) for v in (by_level[l] for l in levels)] if levels else []
+    avg_ttc = [sum(v) / len(v) for v in (ttc_by_level[l] for l in levels)] if levels else []
 
     avg_time = total_time / sample_count if sample_count > 0 else 0.0
     print(f"Average inference time: {avg_time:.3f} seconds over {sample_count} samples")
 
-    return levels, success, label_counts
+    return levels, success, label_counts, avg_ttc
 
-def plot_results(levels, success, label_counts, shots):
+def plot_results(levels, success, label_counts, avg_ttc, shots):
     plt.figure() # Success rate per level (styled like label distribution plot)
 
     success_map = dict(zip(levels, success)) if levels else {}
@@ -285,8 +293,27 @@ def plot_results(levels, success, label_counts, shots):
     
     plt.show()
 
+    plt.figure() # Average TTC per level
+
+    ttc_map = dict(zip(levels, avg_ttc)) if levels else {}
+    ttc_for_all_levels = [ttc_map.get(l, 0.0) for l in full_levels]
+
+    plt.bar(full_levels, ttc_for_all_levels)
+    plt.xlabel("Puzzle Level (Minimum Moves)")
+    plt.ylabel("Average Thinking Token Count")
+    
+    plt.title(f"Average Thinking Token Count by Puzzle Level - Gemini 2.5 Pro ({shot_str})")
+    plt.xticks(full_levels)
+    plt.tight_layout()
+    
+    fname3 = f"avg_ttc_by_level_{shot_str}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.png"
+    plt.savefig(fname3, bbox_inches='tight')
+    print(f"Saved plot: {os.path.abspath(fname3)}")
+    
+    plt.show()
+
 if __name__ == "__main__":
-    shots = 0
+    shots = 3
 
     if shots > 0:
         fsp_puzzles, _, test_puzzles = rh_data.create_dataset(True, False, True)
@@ -298,6 +325,24 @@ if __name__ == "__main__":
         fsp_puzzles = fsp_puzzles if shots > 0 else [],
         test_puzzles = test_puzzles
     )
+
+    import json
+    output_file = f"results_{shots}shot_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+    with open(output_file, "w") as f:
+        json.dump(results, f, indent=4)
+    print(f"Saved results to {output_file}")
     
-    levels, success, label_counts = aggregate(results)
-    plot_results(levels, success, label_counts, shots)
+    levels, success, label_counts, avg_ttc = aggregate(results)
+    plot_results(levels, success, label_counts, avg_ttc, shots)
+
+    # Example verbose evaluation of a single puzzle
+    # _, _, test_puzzles = rh_data.create_dataset(False, False, True)
+
+    # sample = test_puzzles[0]
+
+    # evaluate_sample(
+    #     sample,
+    #     clients[0],
+    #     verbose=True,
+    #     few_shot_examples=None,
+    # )
