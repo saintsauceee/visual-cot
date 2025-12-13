@@ -32,20 +32,19 @@ def create_cot_eval_prompt(puzzle):
 
     1. Factuality:
     Factuality evaluates if the factual information can be grounded in reliable sources.
-    (e.g. board size, car orientation, occupied squares, correct exit)?
+    (e.g. board size, car orientation, occupied squares, correct exit).
 
-    2. Validity:
-        Validity evaluates if a reasoning step contains no logical errors.
-        (e.g. no illegal moves, no colisions, cars stay within bounds).
+    2. Validity: 
+    Validity evaluates if a reasoning step contains no logical errors.
+    (e.g. no illegal moves, no colisions, cars stay within bounds).
 
     3. Coherence:
-    Coherence measures if a reasoning step’s precon- ditions are satisfied by the previous steps 
+    Coherence measures if a reasoning step’s preconditions are satisfied by the previous steps. 
     (e.g. moving a car but not explaining why it had to be moved, a car changes position with no corresponding move).
 
     4. Utility
-    How useful is the response for actually solving the puzzle?
-    A solution with illegal moves or incorrect outcomes has low utility.
-    (e.g. making unnecessary moves, failing to solve the puzzle).
+    Whether a reasoning step contributes to getting the correct final answer
+    (e.g. are there moves that aren't necessary to reach the goal? is there progress toward getting the red car out?).
 
     Scores must be on a 1–5 scale, where:
     - 5 = excellent
@@ -72,8 +71,8 @@ def create_cot_eval_prompt(puzzle):
     Coherence Score (1–5): 5
     Explanation: All the steps logically follow from one another, with no unexplained position changes.
 
-    Utility Score (1–5): 4
-    Explanation: The solution cannot be used to solve the puzzle due to invalid moves, but the overall strategy is sound and the red car is moved towards the exit.
+    Utility Score (1–5): 5
+    Explanation: The solution cannot be used to solve the puzzle due to invalid moves, but the overall strategy is sound and the red car is moved towards the exit. Moving car 'D' is useful for clearing the path for the red car, despite the illegal move.
 
     --- END EXAMPLE ---
 
@@ -186,5 +185,7 @@ plt.ylim(1, 5)
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-plt.savefig("cot_scores_vs_level.png", dpi=300)
+
+time_str = time.strftime("%Y%m%d_%H%M%S", time.localtime())
+plt.savefig(f"cot_scores_vs_level_{time_str}.png", dpi=300)
 plt.show()

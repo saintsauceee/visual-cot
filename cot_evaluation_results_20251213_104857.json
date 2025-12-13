@@ -1,0 +1,657 @@
+[
+    {
+        "puzzle_id": 27,
+        "level": 3,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 2,\n  \"Coherence\": 5,\n  \"Utility\": 4\n}"
+    },
+    {
+        "puzzle_id": 184,
+        "level": 10,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 5,\n  \"Coherence\": 4,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 80,
+        "level": 5,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 5,\n  \"Utility\": 2\n}"
+    },
+    {
+        "puzzle_id": 179,
+        "level": 10,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 3,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 82,
+        "level": 5,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 2,\n  \"Coherence\": 5,\n  \"Utility\": 4\n}"
+    },
+    {
+        "puzzle_id": 202,
+        "level": 10,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 193,
+        "level": 10,
+        "raw_scores": "{\n  \"Factuality\": 4,\n  \"Validity\": 2,\n  \"Coherence\": 1,\n  \"Utility\": 2\n}"
+    },
+    {
+        "puzzle_id": 201,
+        "level": 10,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 152,
+        "level": 8,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 95,
+        "level": 6,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 2,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 137,
+        "level": 8,
+        "raw_scores": "{\n  \"Factuality\": 4,\n  \"Validity\": 1,\n  \"Coherence\": 5,\n  \"Utility\": 3\n}"
+    },
+    {
+        "puzzle_id": 92,
+        "level": 6,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 2,\n  \"Coherence\": 5,\n  \"Utility\": 4\n}"
+    },
+    {
+        "puzzle_id": 150,
+        "level": 8,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 1,\n  \"Coherence\": 5,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 84,
+        "level": 6,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 2,\n  \"Coherence\": 2,\n  \"Utility\": 2\n}"
+    },
+    {
+        "puzzle_id": 132,
+        "level": 8,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 2\n}"
+    },
+    {
+        "puzzle_id": 200,
+        "level": 10,
+        "raw_scores": "{\n    \"Factuality\": 5,\n    \"Validity\": 1,\n    \"Coherence\": 3,\n    \"Utility\": 2\n}"
+    },
+    {
+        "puzzle_id": 94,
+        "level": 6,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 2,\n  \"Coherence\": 5,\n  \"Utility\": 4\n}"
+    },
+    {
+        "puzzle_id": 83,
+        "level": 6,
+        "raw_scores": "{\n    \"Factuality\": 5,\n    \"Validity\": 1,\n    \"Coherence\": 2,\n    \"Utility\": 2\n}"
+    },
+    {
+        "puzzle_id": 147,
+        "level": 8,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 2,\n  \"Coherence\": 5,\n  \"Utility\": 3\n}"
+    },
+    {
+        "puzzle_id": 73,
+        "level": 5,
+        "raw_scores": "{\n\"Factuality\": 5,\n\"Validity\": 2,\n\"Coherence\": 5,\n\"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 363,
+        "level": 17,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 138,
+        "level": 8,
+        "raw_scores": "{\n    \"Factuality\": 3,\n    \"Validity\": 2,\n    \"Coherence\": 2,\n    \"Utility\": 2\n}"
+    },
+    {
+        "puzzle_id": 128,
+        "level": 7,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 2,\n  \"Coherence\": 5,\n  \"Utility\": 4\n}"
+    },
+    {
+        "puzzle_id": 311,
+        "level": 15,
+        "raw_scores": "{\n  \"Factuality\": 4,\n  \"Validity\": 2,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 315,
+        "level": 15,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 108,
+        "level": 7,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 1,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 353,
+        "level": 17,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 309,
+        "level": 15,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 1,\n  \"Coherence\": 3,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 306,
+        "level": 15,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 2,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 107,
+        "level": 7,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 5,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 301,
+        "level": 15,
+        "raw_scores": "{\n    \"Factuality\": 3,\n    \"Validity\": 1,\n    \"Coherence\": 3,\n    \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 197,
+        "level": 10,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 2,\n  \"Coherence\": 5,\n  \"Utility\": 4\n}"
+    },
+    {
+        "puzzle_id": 365,
+        "level": 17,
+        "raw_scores": "{\n\"Factuality\": 1,\n\"Validity\": 1,\n\"Coherence\": 1,\n\"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 352,
+        "level": 17,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 2,\n  \"Coherence\": 5,\n  \"Utility\": 3\n}"
+    },
+    {
+        "puzzle_id": 433,
+        "level": 20,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 302,
+        "level": 15,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 1,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 370,
+        "level": 17,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 319,
+        "level": 15,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 429,
+        "level": 20,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 427,
+        "level": 20,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 2,\n  \"Coherence\": 3,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 354,
+        "level": 17,
+        "raw_scores": "{\n  \"Factuality\": 4,\n  \"Validity\": 1,\n  \"Coherence\": 2,\n  \"Utility\": 2\n}"
+    },
+    {
+        "puzzle_id": 440,
+        "level": 20,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 358,
+        "level": 17,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 5,\n  \"Coherence\": 5,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 425,
+        "level": 20,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 4,\n  \"Coherence\": 4,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 428,
+        "level": 20,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 318,
+        "level": 15,
+        "raw_scores": "{\n  \"Factuality\": 4,\n  \"Validity\": 3,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 360,
+        "level": 17,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 1,\n  \"Coherence\": 2,\n  \"Utility\": 2\n}"
+    },
+    {
+        "puzzle_id": 426,
+        "level": 20,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 2,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 434,
+        "level": 20,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 322,
+        "level": 15,
+        "raw_scores": "{\n    \"Factuality\": 4,\n    \"Validity\": 4,\n    \"Coherence\": 5,\n    \"Utility\": 2\n}"
+    },
+    {
+        "puzzle_id": 364,
+        "level": 17,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 161,
+        "level": 9,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 421,
+        "level": 20,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 2,\n  \"Coherence\": 5,\n  \"Utility\": 3\n}"
+    },
+    {
+        "puzzle_id": 177,
+        "level": 9,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 406,
+        "level": 19,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 401,
+        "level": 19,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 2,\n  \"Coherence\": 3,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 156,
+        "level": 9,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 2,\n  \"Coherence\": 3,\n  \"Utility\": 3\n}"
+    },
+    {
+        "puzzle_id": 176,
+        "level": 9,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 422,
+        "level": 20,
+        "raw_scores": "{\n    \"Factuality\": 3,\n    \"Validity\": 3,\n    \"Coherence\": 2,\n    \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 313,
+        "level": 15,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 412,
+        "level": 19,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 1,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 167,
+        "level": 9,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 5,\n  \"Coherence\": 3,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 409,
+        "level": 19,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 398,
+        "level": 19,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 2,\n  \"Coherence\": 3,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 402,
+        "level": 19,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 378,
+        "level": 18,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 413,
+        "level": 19,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 383,
+        "level": 18,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 404,
+        "level": 19,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 3,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 166,
+        "level": 9,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 5,\n  \"Coherence\": 3,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 162,
+        "level": 9,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 1,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 389,
+        "level": 18,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 386,
+        "level": 18,
+        "raw_scores": "{\n    \"Factuality\": 2,\n    \"Validity\": 2,\n    \"Coherence\": 3,\n    \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 323,
+        "level": 16,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 159,
+        "level": 9,
+        "raw_scores": "{\n  \"Factuality\": 4,\n  \"Validity\": 2,\n  \"Coherence\": 5,\n  \"Utility\": 4\n}"
+    },
+    {
+        "puzzle_id": 173,
+        "level": 9,
+        "raw_scores": "{\n  \"Factuality\": 4,\n  \"Validity\": 2,\n  \"Coherence\": 3,\n  \"Utility\": 3\n}"
+    },
+    {
+        "puzzle_id": 343,
+        "level": 16,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 331,
+        "level": 16,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 340,
+        "level": 16,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 3,\n  \"Coherence\": 3,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 336,
+        "level": 16,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 381,
+        "level": 18,
+        "raw_scores": "{\n    \"Factuality\": 5,\n    \"Validity\": 1,\n    \"Coherence\": 1,\n    \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 417,
+        "level": 19,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 5,\n  \"Coherence\": 5,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 392,
+        "level": 18,
+        "raw_scores": "{\n\"Factuality\": 3,\n\"Validity\": 2,\n\"Coherence\": 2,\n\"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 377,
+        "level": 18,
+        "raw_scores": "{\n    \"Factuality\": 3,\n    \"Validity\": 1,\n    \"Coherence\": 3,\n    \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 327,
+        "level": 16,
+        "raw_scores": "{\n    \"Factuality\": 2,\n    \"Validity\": 1,\n    \"Coherence\": 1,\n    \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 339,
+        "level": 16,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 2,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 244,
+        "level": 12,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 5,\n  \"Coherence\": 4,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 269,
+        "level": 13,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 233,
+        "level": 12,
+        "raw_scores": "{\n    \"Factuality\": 2,\n    \"Validity\": 1,\n    \"Coherence\": 1,\n    \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 418,
+        "level": 19,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 4,\n  \"Coherence\": 3,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 341,
+        "level": 16,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 2,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 350,
+        "level": 17,
+        "raw_scores": "{\n  \"Factuality\": 4,\n  \"Validity\": 2,\n  \"Coherence\": 3,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 240,
+        "level": 12,
+        "raw_scores": "{\n    \"Factuality\": 3,\n    \"Validity\": 2,\n    \"Coherence\": 2,\n    \"Utility\": 3\n}"
+    },
+    {
+        "puzzle_id": 379,
+        "level": 18,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 3,\n  \"Coherence\": 3,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 384,
+        "level": 18,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 2,\n  \"Coherence\": 5,\n  \"Utility\": 2\n}"
+    },
+    {
+        "puzzle_id": 334,
+        "level": 16,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 241,
+        "level": 12,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 259,
+        "level": 13,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 2,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 346,
+        "level": 16,
+        "raw_scores": "{\n  \"Factuality\": 4,\n  \"Validity\": 2,\n  \"Coherence\": 2,\n  \"Utility\": 2\n}"
+    },
+    {
+        "puzzle_id": 258,
+        "level": 13,
+        "raw_scores": "{\n    \"Factuality\": 2,\n    \"Validity\": 2,\n    \"Coherence\": 2,\n    \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 248,
+        "level": 12,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 2,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 260,
+        "level": 13,
+        "raw_scores": "{\n  \"Factuality\": 4,\n  \"Validity\": 1,\n  \"Coherence\": 3,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 227,
+        "level": 12,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 5,\n  \"Coherence\": 5,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 261,
+        "level": 13,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 270,
+        "level": 13,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 2,\n  \"Coherence\": 5,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 232,
+        "level": 12,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 2,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 224,
+        "level": 11,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 253,
+        "level": 13,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 216,
+        "level": 11,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 251,
+        "level": 13,
+        "raw_scores": "{\n    \"Factuality\": 3,\n    \"Validity\": 2,\n    \"Coherence\": 3,\n    \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 210,
+        "level": 11,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 2,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 213,
+        "level": 11,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 2,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 207,
+        "level": 11,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 2,\n  \"Coherence\": 3,\n  \"Utility\": 3\n}"
+    },
+    {
+        "puzzle_id": 205,
+        "level": 11,
+        "raw_scores": "{\n  \"Factuality\": 4,\n  \"Validity\": 2,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 263,
+        "level": 13,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 4,\n  \"Coherence\": 3,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 297,
+        "level": 14,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 2,\n  \"Coherence\": 4,\n  \"Utility\": 2\n}"
+    },
+    {
+        "puzzle_id": 226,
+        "level": 11,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 5,\n  \"Coherence\": 5,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 247,
+        "level": 12,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 1,\n  \"Coherence\": 4,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 288,
+        "level": 14,
+        "raw_scores": "{\n  \"Factuality\": 4,\n  \"Validity\": 5,\n  \"Coherence\": 3,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 255,
+        "level": 13,
+        "raw_scores": "{\n  \"Factuality\": 4,\n  \"Validity\": 1,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 222,
+        "level": 11,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 1,\n  \"Coherence\": 2,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 280,
+        "level": 14,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 2,\n  \"Coherence\": 5,\n  \"Utility\": 2\n}"
+    },
+    {
+        "puzzle_id": 284,
+        "level": 14,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 1,\n  \"Coherence\": 2,\n  \"Utility\": 2\n}"
+    },
+    {
+        "puzzle_id": 285,
+        "level": 14,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 4,\n  \"Coherence\": 5,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 209,
+        "level": 11,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 283,
+        "level": 14,
+        "raw_scores": "{\n  \"Factuality\": 2,\n  \"Validity\": 4,\n  \"Coherence\": 5,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 211,
+        "level": 11,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 2,\n  \"Coherence\": 3,\n  \"Utility\": 2\n}"
+    },
+    {
+        "puzzle_id": 286,
+        "level": 14,
+        "raw_scores": "{\n    \"Factuality\": 4,\n    \"Validity\": 1,\n    \"Coherence\": 3,\n    \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 294,
+        "level": 14,
+        "raw_scores": "{\n  \"Factuality\": 3,\n  \"Validity\": 2,\n  \"Coherence\": 4,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 293,
+        "level": 14,
+        "raw_scores": "{\n  \"Factuality\": 5,\n  \"Validity\": 4,\n  \"Coherence\": 4,\n  \"Utility\": 1\n}"
+    },
+    {
+        "puzzle_id": 279,
+        "level": 14,
+        "raw_scores": "{\n  \"Factuality\": 1,\n  \"Validity\": 1,\n  \"Coherence\": 1,\n  \"Utility\": 1\n}"
+    }
+]
