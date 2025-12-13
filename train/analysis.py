@@ -160,10 +160,17 @@ def model_evaluate(
             curr_level_examples = None
 
         # collect puzzles for this level
+        '''
         level_puzzles = [
             (idx, p) for idx, p in enumerate(test_puzzles)
             if getattr(p, "min_num_moves", None) == level
         ]
+        '''
+        level_puzzles = [
+            (p.id, p) for p in test_puzzles
+            if getattr(p, "min_num_moves", None) == level
+        ]
+
         if not level_puzzles:
             return []
 
