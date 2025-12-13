@@ -18,18 +18,18 @@ from sft import board_to_str, build_prompt
 MODEL_NAME = "gemini-2.5-pro"
 
 KEYS = [
-    "AIzaSyD-n1tOAJDleD1kZn7tneGinHgPZ1fZKcw",
-    "AIzaSyCfLo1kXCmRLJqbvyU-r02GmWfiZ28SwGY",
-    "AIzaSyDJ2fWvzbdHKN7T63-oa9553FCNLKe7Zys",
-    "AIzaSyAuuHz4S4ESFdFYdt9BNWRlQpAglKns4YY",
-    "AIzaSyA5qM4pCfr0iHFPIQWJljy67W2Ov-r5niY",
+    "AIzaSyA5tVNSBvsWxM3ElgL7yGm6J2nDDhXWOQA",
+    "AIzaSyDtfoAtCbsX_XqlZfwDcQAi1NYxrVu_6hY",
+    "AIzaSyAx4GymDhNoZKPJn3Fd3Na8Z75a1FmuPVA"
 ]
 
 # map each level to an index into KEYS
 LEVEL_TO_KEY_IDX = {
-    3: 0, 4: 1, 5: 2, 6: 3, 7: 4, 
-    8: 0, 9: 1, 10: 2, 11: 3, 12: 4, 
-    13: 0, 14: 1, 15: 2, 16: 3, 17: 4, 
+    3: 0, 4: 1, 5: 2,
+    6: 0, 7: 1, 8: 2,
+    9: 0, 10: 1, 11: 2,
+    12: 0, 13: 1, 14: 2,
+    15: 0, 16: 1, 17: 2,
     18: 0, 19: 1, 20: 2,
 }
 
