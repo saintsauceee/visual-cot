@@ -3,7 +3,7 @@ import ast
 import matplotlib.pyplot as plt
 from collections import defaultdict
 
-with open("./cot_evaluation_results_20251213_071144.json", "r", encoding="utf-8") as f:
+with open("./cot_evaluation_results_20251213_073258.json", "r", encoding="utf-8") as f:
     data = json.load(f)
 
 scores = defaultdict(lambda: defaultdict(list))
