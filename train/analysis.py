@@ -1,6 +1,8 @@
 import os
 import ast
 import time
+from dotenv import load_dotenv
+
 from tqdm import tqdm
 from datetime import datetime
 from matplotlib import pyplot as plt
@@ -14,12 +16,14 @@ import rh_data
 from puzzle import RushHourSample, validate_solution
 from sft import board_to_str, build_prompt
 
+load_dotenv()
+
 MODEL_NAME = "gemini-2.5-pro"
 
 KEYS = [
-    "AIzaSyA5tVNSBvsWxM3ElgL7yGm6J2nDDhXWOQA",
-    "AIzaSyDtfoAtCbsX_XqlZfwDcQAi1NYxrVu_6hY",
-    "AIzaSyAx4GymDhNoZKPJn3Fd3Na8Z75a1FmuPVA"
+    os.getenv("GEMINI_API_KEY_1"),
+    os.getenv("GEMINI_API_KEY_2"),
+    os.getenv("GEMINI_API_KEY_3")
 ]
 
 # map each level to an index into KEYS
