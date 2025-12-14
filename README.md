@@ -6,6 +6,44 @@ Large Language Models (LLMs) frequently struggle with multi-step spatial plannin
 
 We evaluate **Gemini 2.5 Pro** on procedurally generated puzzles ranging from trivial (3-step) to complex (20-step) optimal solutions. By stripping away visual perception and providing text-only inputs, we isolate the reasoning engine to test the hypothesis that LLMs exhibit a distinct "planning horizon"—a complexity threshold beyond which state-tracking degrades.
 
+## Setup
+
+### Prerequisites
+- Python 3.10+
+- A Google Cloud Project with the Gemini API enabled.
+
+### Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/saintsauceee/visual-cot.git
+    cd visual-cot
+    ```
+
+2.  **Create and activate a virtual environment:**
+    ```bash
+    python -m venv .venv
+    source .venv/bin/activate  # On Windows use: .venv\Scripts\activate
+    ```
+
+3.  **Install dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+### API Configuration
+
+This project uses the Google Gemini API. You need to set up your API keys in a `.env` file.
+
+1.  Create a `.env` file in the root directory.
+2.  Add your Gemini API keys. The scripts are designed to rotate between multiple keys to handle rate limits, but you can use the same key for all if needed.
+
+    ```env
+    GEMINI_API_KEY_1=your_api_key_here
+    GEMINI_API_KEY_2=your_second_key_here
+    GEMINI_API_KEY_3=your_third_key_here
+    ```
+
 ## Methodology
 
 ### Environment: Rush Hour
