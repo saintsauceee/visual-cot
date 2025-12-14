@@ -4,7 +4,7 @@
 
 Large Language Models (LLMs) frequently struggle with multi-step spatial planning, yet distinguishing visual perception failures from intrinsic reasoning deficits remains challenging. This project investigates the strict limits of text-only spatial reasoning using the **Rush Hour** sliding-block puzzle.
 
-We evaluate **Gemini 2.5 Pro** on procedurally generated puzzles ranging from trivial (3-step) to complex (20-step) optimal solutions. By stripping away visual perception and providing text-only inputs, we isolate the reasoning engine to test the hypothesis that LLMs exhibit a distinct "planning horizon"—a complexity threshold beyond which state-tracking degrades.
+We evaluate **Gemini 2.5 Pro** on procedurally generated puzzles ranging from trivial (3-step) to complex (20-step) optimal solutions. By stripping away visual perception and providing text-only inputs, we isolate the reasoning engine to test the hypothesis that LLMs exhibit a distinct "planning horizon", a complexity threshold beyond which state-tracking degrades.
 
 ## Setup
 
