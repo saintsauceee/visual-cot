@@ -1,3 +1,4 @@
+import re
 import os
 import ast
 import time
@@ -12,9 +13,35 @@ from google.genai import types
 
 import rh_data
 from puzzle import RushHourSample, validate_solution
-from sft import board_to_str, build_prompt
+from sft import board_to_str
 
 MODEL_NAME = "gemini-2.5-pro"
+
+AUGMENTED_INSTRUCTIONS = """You are solving a Rush Hour puzzle on a 6x6 grid.
+
+Output ONLY a Python literal dict with exactly these keys:
+- "steps": a list of step dicts
+- "final_moves": a list of move dicts
+
+Each step dict MUST have:
+- "move": a move dict with keys {"name","direction","distance"}
+- "board": the ASCII board AFTER applying that move
+
+Constraints:
+- "final_moves" MUST equal [step["move"] for step in steps].
+- Every move must be legal from the previous state.
+- The puzzle is solved only if the red car 'R' reaches the exit.
+- Do NOT output any explanation, markdown, or backticks. Only the Python literal dict.
+
+Legality details:
+- Rows 1..6 top->bottom, cols 1..6 left->right.
+- Cars are contiguous; orientation is fixed.
+- A move is legal only if all traversed destination cells are '.' and remain inside the 6x6 grid.
+- The provided "board" must be exactly the result of applying the move to the previous board.
+
+Move format:
+{"name": <single-character car id>, "direction": "up"|"down"|"left"|"right", "distance": <int>}
+"""
 
 KEYS = [
     "AIzaSyA5tVNSBvsWxM3ElgL7yGm6J2nDDhXWOQA",
@@ -37,6 +64,28 @@ clients = [
     for k in KEYS
 ]
 
+def strip_code_fences(s: str) -> str:
+    s = s.strip()
+    # Remove leading ```python / ``` and trailing ```
+    s = re.sub(r"^\s*```[a-zA-Z0-9_-]*\s*\n", "", s)
+    s = re.sub(r"\n\s*```\s*$", "", s)
+    return s.strip()
+
+def build_augmented_prompt(sample: RushHourSample) -> str:
+    board = board_to_str(sample.board)
+    exit_ = sample.exit
+
+    prompt = (
+        AUGMENTED_INSTRUCTIONS
+        + "\n\nInitial board:\n"
+        + board
+        + "\n\nExit:\n"
+        + str(exit_)
+        + "\nExit is to the RIGHT of column 6 on the red car's row.\n"
+        + "\n\nReturn the Python literal dict now."
+    )
+    return prompt
+
 def generate_output(prompt: str, client: genai.Client):
     max_retries = 3
     delay_seconds = 5
@@ -50,7 +99,7 @@ def generate_output(prompt: str, client: genai.Client):
                 config=types.GenerateContentConfig(
                     thinking_config=types.ThinkingConfig(
                         include_thoughts=True,
-                        thinking_budget=128,
+                        # thinking_budget=THINKING_BUDGET,
                     )
                 ),
             )
@@ -90,13 +139,9 @@ def evaluate_sample(
     sample: RushHourSample,
     client: genai.Client,
     verbose: bool = False, 
-    few_shot_examples: list[tuple[str, list[dict[str, str | int]]]] | None = None,
+    few_shot_examples = None,
 ):
-    prompt = build_prompt(
-        board_to_str(sample.board), 
-        sample.exit,
-        few_shot_examples=few_shot_examples
-    ) + '\nSolution:'
+    prompt = build_augmented_prompt(sample)
 
     if verbose:
         print("=" * 80 + "\n")
@@ -104,23 +149,34 @@ def evaluate_sample(
         print(prompt + "\n")
         print("=" * 80 + "\n")
 
-    thoughts, answer, duration, ttc = generate_output(
-        prompt, 
-        client
-    )
+    thoughts, answer, duration, ttc = generate_output(prompt, client)
 
     if verbose:
         print("Generated Solution:\n")
         print(answer)
-
         print(f"Inference time: {duration:.3f} seconds\n")
 
     try:
-        gen_moves = ast.literal_eval(answer)
+        clean = strip_code_fences(answer)
+        obj = ast.literal_eval(clean)
     except Exception as e:
         if verbose:
-            print(f"failed to parse generated solution: {e}")
+            print(f"failed to parse generated output: {e}")
         return False, "PARSE_ERROR", thoughts, answer, duration, ttc, prompt
+    
+    if not isinstance(obj, dict):
+        return False, "BAD_TOPLEVEL_TYPE", thoughts, answer, duration, ttc, prompt
+
+    if "steps" not in obj or not isinstance(obj["steps"], list):
+        return False, "MISSING_STEPS", thoughts, answer, duration, ttc, prompt
+
+    if "final_moves" not in obj:
+        return False, "MISSING_FINAL_MOVES", thoughts, answer, duration, ttc, prompt
+
+
+    gen_moves = obj["final_moves"]
+    if not isinstance(gen_moves, list):
+        return False, "BAD_FINAL_MOVES_TYPE", thoughts, answer, duration, ttc, prompt
     
     valid, label = validate_solution(sample, gen_moves, check_optimal=True)
 
@@ -133,44 +189,17 @@ def evaluate_sample(
     return valid, label, thoughts, answer, duration, ttc, prompt
 
 def model_evaluate(
-    include_fsp: bool,
-    fsp_puzzles: list[RushHourSample],
+    include_fsp: bool, # don't use
+    fsp_puzzles: list[RushHourSample], # don't use
     test_puzzles: list[RushHourSample]
 ):
     results: list[dict] = []
 
-    # build few-shot examples grouped by level
-    fsp_by_level: dict[int, list[tuple[str, list[dict[str, str | int]]]]] = defaultdict(list)
-    if include_fsp:
-        for puzzle in fsp_puzzles:
-            level = getattr(puzzle, "min_num_moves", None)
-            if level is not None:
-                fsp_by_level[level].append(
-                    (board_to_str(puzzle.board), puzzle.solution_moves)
-                )
-
     def evaluate_level(level: int) -> list[dict]:
-        # choose few-shot examples for this level
-        if include_fsp:
-            curr_level_examples = fsp_by_level.get(level, None)
-            if not curr_level_examples:
-                print(f"No few-shot examples found for level {level}, using zero-shot.")
-                curr_level_examples = None
-        else:
-            curr_level_examples = None
-
-        # collect puzzles for this level
-        '''
         level_puzzles = [
             (p.id, p) for p in test_puzzles
             if getattr(p, "min_num_moves", None) == level
         ]
-        '''
-        level_puzzles = [
-            (p.id, p) for p in test_puzzles
-            if getattr(p, "min_num_moves", None) == level
-        ]
-
         if not level_puzzles:
             return []
 
@@ -188,7 +217,7 @@ def model_evaluate(
                     puzzle,
                     client_for_level,
                     False,
-                    curr_level_examples,
+                    None,
                 ): (idx, puzzle)
                 for idx, puzzle in level_puzzles
             }
@@ -316,8 +345,8 @@ def plot_results(levels, success, label_counts, avg_ttc, shots):
     print(f"Saved plot: {os.path.abspath(fname3)}")  
     plt.show()
 
-if __name__ == "__main__":
-    shots = 3
+def run_experiment():
+    shots = 0
 
     if shots > 0:
         fsp_puzzles, _, test_puzzles = rh_data.create_dataset(True, False, True)
@@ -339,10 +368,13 @@ if __name__ == "__main__":
     levels, success, label_counts, avg_ttc = aggregate(results)
     plot_results(levels, success, label_counts, avg_ttc, shots)
 
+if __name__ == "__main__":
+    run_experiment()
+
     # Example verbose evaluation of a single puzzle
     # _, _, test_puzzles = rh_data.create_dataset(False, False, True)
 
-    # sample = test_puzzles[0]
+    # sample = test_puzzles[10]
 
     # evaluate_sample(
     #     sample,
