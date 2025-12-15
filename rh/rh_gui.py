@@ -5,7 +5,7 @@ CELL_SIZE = 60
 GRID_SIZE = N * CELL_SIZE
 
 def draw_grid(canvas: tk.Canvas, n: int, cell: int):
-    """ Draws an n x n grid of cell-sized squares on the given canvas. """
+    # Draws an n x n grid of cell-sized squares on the given canvas.
     for i in range(n + 1):
         y = i * cell
         canvas.create_line(0, y, n * cell, y, fill="black")
@@ -15,7 +15,7 @@ def draw_grid(canvas: tk.Canvas, n: int, cell: int):
         canvas.create_line(x, 0, x, n * cell, fill="black")
 
 def add_buttons(root):
-    """ Add all control buttons under the grid. """
+    #Add all control buttons under the grid.
     btn_frame = tk.Frame(root)
     btn_frame.pack(side = "left")
 

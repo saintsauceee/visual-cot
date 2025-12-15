@@ -1,15 +1,7 @@
 import json
 
 def data_loader(file_path = './dataset/rush_no_wall_1000_balanced.json'):
-    """
-    Load all puzzles from a single JSON file into a dictionary.
-
-    Args:
-        file_path (str): Path to the JSON file containing all puzzles.
-
-    Returns:
-        dict: {puzzle_name (int): board (list of lists)}
-    """
+    
     with open(file_path, "r", encoding="utf-8") as file:
         puzzles_list = json.load(file)
 

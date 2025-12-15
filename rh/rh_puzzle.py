@@ -6,8 +6,6 @@ class RushHourPuzzle:
     Implementation of the Rush Hour Puzzle.
     - Board size N x N (default 6)
     
-    Here is a snapshot of what a grid should look like (conceptually):
-
     board = [
         [   'A',   'A',    None,   'B',    None,   None    ],
         [   None,  None,   None,   'B',    None,   'F'     ],
@@ -17,7 +15,6 @@ class RushHourPuzzle:
         [   None,  None,   None,   None,   'E',    'E'     ],
     ]
 
-    There is no justified spacing in the actual snapshots, it's just for my personal OCD.
     """
 
     def __init__(self, id, exit, min_moves, board):

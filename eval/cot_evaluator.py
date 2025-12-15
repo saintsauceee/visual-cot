@@ -6,24 +6,20 @@ from typing import Dict, List, Optional
 from data.rh_exceptions import CarNotFound, InvalidMove
 from data.rh_puzzle import RushHourPuzzle
 
-# Regex to capture simple natural-language move descriptions.
-# Examples it matches:
-# - "Red left 2"
-# - "Move R to the right by 1"
-# - "slide car B up 3 spaces"
+
 MOVE_PATTERN = re.compile(
     r"""
-    (?:(?:move|slide|shift)\s+)?                # optional leading verb
-    (?:the\s+)?                                 # optional 'the'
-    (?:car\s+)?                                 # optional 'car' before the id
-    (?P<car>[A-Za-z]+)                          # car identifier or color name
-    (?:\s+car)?                                 # optional 'car' after the id
-    \s+(?:to\s+the\s+)?                         # connector before direction
-    (?P<direction>left|right|up|down|           # direction keywords
+    (?:(?:move|slide|shift)\s+)?               
+    (?:the\s+)?                                 
+    (?:car\s+)?                               
+    (?P<car>[A-Za-z]+)                         
+    (?:\s+car)?                                 
+    \s+(?:to\s+the\s+)?                       
+    (?P<direction>left|right|up|down|   
         leftward|rightward|leftwards|rightwards)
     \b
-    (?:\s+(?:by|for|to)?\s*)?                   # optional filler before distance
-    (?P<distance>-?\d+)                         # move distance
+    (?:\s+(?:by|for|to)?\s*)?                 
+    (?P<distance>-?\d+)                        
     """,
     re.IGNORECASE | re.VERBOSE,
 )
@@ -57,13 +53,8 @@ class ScoreResult:
 
 def parse_cot_to_moves(cot_text: str) -> ParseResult:
     """
-    Parse natural-language CoT text into structured moves.
-
-    Args:
-        cot_text: Free-form chain-of-thought description.
-
-    Returns:
-        ParseResult containing extracted moves and any parse errors.
+    Args: chain-of-thought description (text)
+    Returns: ParseResult containing extracted moves and errors
     """
 
     moves: List[Dict[str, object]] = []
@@ -92,16 +83,6 @@ def parse_cot_to_moves(cot_text: str) -> ParseResult:
 
 
 def simulate_moves(puzzle_dict: Dict[str, object], move_list: List[Dict[str, object]]) -> SimulationResult:
-    """
-    Simulate the parsed moves on a RushHourPuzzle instance.
-
-    Args:
-        puzzle_dict: Raw puzzle data loaded from the dataset.
-        move_list: List of move dicts with keys: name, direction, distance.
-
-    Returns:
-        SimulationResult capturing progress, solved status, and any errors.
-    """
 
     puzzle_obj = RushHourPuzzle(
         id=puzzle_dict["id"],
@@ -131,16 +112,6 @@ def simulate_moves(puzzle_dict: Dict[str, object], move_list: List[Dict[str, obj
 
 
 def score_cot(sim_result: SimulationResult, parse_errors: List[str]) -> ScoreResult:
-    """
-    Assign a heuristic label/score to the CoT attempt based on simulation.
-
-    Args:
-        sim_result: Outcome from simulate_moves.
-        parse_errors: Errors from parse_cot_to_moves.
-
-    Returns:
-        ScoreResult with label ('good'|'okay'|'bad') and score (1.0|0.5|0.0).
-    """
 
     if sim_result.solved:
         return ScoreResult(label="good", score=1.0)
